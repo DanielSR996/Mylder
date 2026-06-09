@@ -1,0 +1,297 @@
+  const CALENDAR_ID = "danielsilvaramirez.dsr@gmail.com";
+  const TIMEZONE = "America/Mexico_City";
+  const API_VERSION = "2026-05-21.1";
+  const REQUIRED_TOKEN = "Mylder_Agenda_2026!x9Q#k2Lm8P@r7V";
+  const SLOT_DURATION_MIN = 60;
+  const START_HOUR = 9;
+  const END_HOUR = 20;
+const INTERNAL_ALERT_EMAILS = [
+  "contacto@mylder.mx",
+  "danielsilvaramirez.dsr@gmail.com"
+].join(",");
+
+  function doGet(e) {
+    try {
+      const params = (e && e.parameter) ? e.parameter : {};
+      const action = resolveAction(params);
+
+      if (isHealthAction(action)) {
+        return ok({
+          status: "ok",
+          endpoint: action,
+          nowIso: new Date().toISOString(),
+          timezone: TIMEZONE
+        });
+      }
+
+      if (!isAuthorized(params.token)) {
+        return apiError("UNAUTHORIZED", "Token inválido o ausente");
+      }
+
+      if (action === "availability") {
+        const date = (params.date || "").trim();
+        if (!isValidDate(date)) return apiError("INVALID_DATE", "Fecha inválida");
+
+        const availability = getAvailability(date);
+        return ok(availability);
+      }
+
+      if (action === "reserve") {
+        const payload = {
+          date: (params.date || "").trim(),
+          time: (params.time || "").trim(),
+          name: (params.name || "").trim(),
+          email: (params.email || "").trim(),
+          phone: (params.phone || "").trim(),
+          service: (params.service || "").trim(),
+          source: (params.source || "").trim(),
+          contactChannel: (params.contactChannel || "").trim()
+        };
+        return json(reserveSlot(payload));
+      }
+
+      if (action === "contact") {
+        const payload = {
+          name: (params.name || "").trim(),
+          email: (params.email || "").trim(),
+          phone: (params.phone || "").trim(),
+          service: (params.service || "").trim(),
+          source: (params.source || "").trim(),
+          contactChannel: (params.contactChannel || "").trim(),
+          message: (params.message || "").trim()
+        };
+        return json(submitContact(payload));
+      }
+
+      return apiError("UNSUPPORTED_ACTION", "Acción no soportada", { received: action || null });
+    } catch (err) {
+      return internalError(err);
+    }
+  }
+
+  function doPost(e) {
+    try {
+      const rawBody = (e && e.postData && e.postData.contents) ? e.postData.contents : "{}";
+      let body = {};
+      try {
+        body = JSON.parse(rawBody || "{}");
+      } catch (jsonErr) {
+        return apiError("INVALID_JSON", "JSON de entrada inválido");
+      }
+
+      const action = resolveAction(body);
+
+      if (isHealthAction(action)) {
+        return ok({
+          status: "ok",
+          endpoint: action,
+          nowIso: new Date().toISOString(),
+          timezone: TIMEZONE
+        });
+      }
+
+      if (!isAuthorized(body.token)) {
+        return apiError("UNAUTHORIZED", "Token inválido o ausente");
+      }
+
+      if (action === "reserve") {
+        const result = reserveSlot(body);
+        return json(result);
+      }
+
+      if (action === "availability") {
+        const date = (body.date || "").trim();
+        if (!isValidDate(date)) return apiError("INVALID_DATE", "Fecha inválida");
+        return ok(getAvailability(date));
+      }
+
+      if (action === "contact") {
+        return json(submitContact(body));
+      }
+
+      return apiError("UNSUPPORTED_ACTION", "Acción no soportada", { received: action || null });
+    } catch (err) {
+      return internalError(err);
+    }
+  }
+
+  function reserveSlot(payload) {
+    const date = (payload.date || "").trim();
+    const time = (payload.time || "").trim();
+    const name = (payload.name || "Lead Web Mylder").trim();
+    const email = (payload.email || "contacto@mylder.mx").trim();
+    const phone = (payload.phone || "").trim();
+    const service = (payload.service || "No definido").trim();
+    const source = (payload.source || "web").trim();
+    const contactChannel = (payload.contactChannel || "No especificado").trim();
+
+    if (!isValidDate(date)) return resultError("INVALID_DATE", "Fecha inválida");
+    if (!isValidTime(time)) return resultError("INVALID_TIME", "Horario inválido");
+    if (!isAllowedBusinessDateTime(date, time)) return resultError("OUT_OF_WINDOW", "Horario fuera de disponibilidad");
+
+    const cal = CalendarApp.getCalendarById(CALENDAR_ID);
+    const start = new Date(`${date}T${time}:00`);
+    const end = new Date(start.getTime() + SLOT_DURATION_MIN * 60000);
+
+    const lock = LockService.getScriptLock();
+    lock.waitLock(20000);
+    try {
+      const overlaps = cal.getEvents(start, end);
+      if (overlaps.length > 0) return resultError("SLOT_TAKEN", "Horario ocupado");
+
+      const title = `Reunión Mylder - ${name}`;
+      const description = [
+        `Nombre: ${name}`,
+        `Email: ${email}`,
+        `Teléfono: ${phone || "No indicado"}`,
+        `Servicio: ${service}`,
+        `Origen: ${source}`,
+        `Contacto preferido: ${contactChannel}`
+      ].join("\n");
+
+      const event = cal.createEvent(title, start, end, {
+        description,
+        guests: email || "",
+        sendInvites: Boolean(email)
+      });
+
+      // Aviso interno opcional
+      MailApp.sendEmail({
+        to: INTERNAL_ALERT_EMAILS,
+        subject: `Nueva reunión agendada: ${date} ${time} | ${service}`,
+        body: `${description}\n\nFecha: ${date}\nHora: ${time}`,
+        replyTo: email || "contacto@mylder.mx",
+        name: "Agenda Web Mylder"
+      });
+
+      return resultOk({ eventId: event.getId() });
+    } finally {
+      lock.releaseLock();
+    }
+  }
+
+  function submitContact(payload) {
+    const name = (payload.name || "").trim();
+    const email = (payload.email || "").trim();
+    const phone = (payload.phone || "").trim();
+    const service = (payload.service || "No definido").trim();
+    const source = (payload.source || "No especificado").trim();
+    const contactChannel = (payload.contactChannel || "No especificado").trim();
+    const message = (payload.message || "").trim();
+
+    if (!name) return resultError("INVALID_NAME", "Nombre requerido");
+    if (!email) return resultError("INVALID_EMAIL", "Email requerido");
+    if (!phone) return resultError("INVALID_PHONE", "Teléfono requerido");
+    if (!message) return resultError("INVALID_MESSAGE", "Mensaje requerido");
+
+    const body = [
+      `Nombre: ${name}`,
+      `Email: ${email}`,
+      `Teléfono: ${phone}`,
+      `Servicio: ${service}`,
+      `Origen: ${source}`,
+      `Contacto preferido: ${contactChannel}`,
+      "",
+      "Mensaje:",
+      message
+    ].join("\n");
+
+    MailApp.sendEmail({
+      to: INTERNAL_ALERT_EMAILS,
+      subject: `Nuevo contacto web: ${name} | ${service}`,
+      body: body,
+      replyTo: email,
+      name: "Formulario Web Mylder"
+    });
+
+    return resultOk({ sent: true });
+  }
+
+  function getAvailability(date) {
+    const cal = CalendarApp.getCalendarById(CALENDAR_ID);
+    const dayStart = new Date(`${date}T00:00:00`);
+    const dayEnd = new Date(`${date}T23:59:59`);
+    const events = cal.getEvents(dayStart, dayEnd);
+
+    const booked = new Set();
+    events.forEach((ev) => {
+      const start = ev.getStartTime();
+      const hh = String(start.getHours()).padStart(2, "0");
+      const mm = String(start.getMinutes()).padStart(2, "0");
+      booked.add(`${hh}:${mm}`);
+    });
+
+    const recommendedCandidates = ["10:00", "11:00", "12:00", "17:00", "18:00"];
+    const recommended = recommendedCandidates.find((time) => !booked.has(time)) || null;
+
+    return { booked: [...booked], recommended };
+  }
+
+  function isAuthorized(token) {
+    const cleanToken = String(token || "").trim();
+    return cleanToken !== "" && cleanToken === REQUIRED_TOKEN;
+  }
+
+  function getAction(value) {
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function resolveAction(payload) {
+    const action = getAction(payload.action);
+    if (action) return action;
+
+    const hasDate = Boolean(String(payload.date || "").trim());
+    const hasTime = Boolean(String(payload.time || "").trim());
+    if (hasDate && hasTime) return "reserve";
+    if (hasDate) return "availability";
+    return "";
+  }
+
+  function isHealthAction(action) {
+    return action === "health" || action === "healthcheck" || action === "version";
+  }
+
+  function isValidDate(date) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(date);
+  }
+
+  function isValidTime(time) {
+    return /^([01]\d|2[0-3]):00$/.test(time);
+  }
+
+  function isAllowedBusinessDateTime(date, time) {
+    const d = new Date(`${date}T00:00:00`);
+    const day = d.getDay(); // 0 dom, 1 lun ... 6 sab
+    const hour = Number(time.split(":")[0]);
+    return day >= 1 && day <= 6 && hour >= START_HOUR && hour <= END_HOUR;
+  }
+
+  function json(payload) {
+    return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  function ok(data) {
+    return json(resultOk(data));
+  }
+
+  function apiError(code, message, details) {
+    return json(resultError(code, message, details));
+  }
+
+  function internalError(err) {
+    return apiError("INTERNAL_ERROR", "Error interno", { reason: String(err) });
+  }
+
+  function resultOk(data) {
+    return Object.assign({ ok: true, version: API_VERSION }, data || {});
+  }
+
+  function resultError(code, message, details) {
+    const payload = {
+      ok: false,
+      version: API_VERSION,
+      error: { code, message }
+    };
+    if (details) payload.details = details;
+    return payload;
+  }

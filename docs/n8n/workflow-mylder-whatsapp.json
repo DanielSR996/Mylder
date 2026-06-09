@@ -1,0 +1,485 @@
+{
+  "name": "Mylder - WhatsApp Contacto y Citas",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Webhook Mylder",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        160
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mylder-whatsapp-events",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "id": "2",
+      "name": "Validar Secreto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -980,
+        160
+      ],
+      "parameters": {
+        "jsCode": "const expected = $env.MYLDER_N8N_SECRET || '';\nconst received = $json.headers?.['x-mylder-webhook-secret'] || '';\n\n// Si no configuras secreto, deja pasar (modo inicial).\nif (!expected) {\n  return items;\n}\n\nif (received === expected) {\n  return items;\n}\n\n// Si el secreto no coincide, no procesa el evento.\nreturn [];"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Solo Booking",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        20
+      ],
+      "parameters": {
+        "jsCode": "if ($json.body?.eventType === 'booking_reserved') {\n  return items;\n}\nreturn [];"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Solo Contacto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        300
+      ],
+      "parameters": {
+        "jsCode": "if ($json.body?.eventType === 'contact_submitted') {\n  return items;\n}\nreturn [];"
+      }
+    },
+    {
+      "id": "5",
+      "name": "Booking con OptIn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        20
+      ],
+      "parameters": {
+        "jsCode": "if ($json.body?.data?.lead?.whatsappOptIn === true) {\n  return items;\n}\nreturn [];"
+      }
+    },
+    {
+      "id": "6",
+      "name": "WhatsApp Confirmacion Cita",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: $json.body.data.lead.phone.replace(/\\s+/g, ''),\n  type: 'text',\n  text: {\n    body: `Hola ${$json.body.data.lead.name}, tu cita con Mylder quedo confirmada para el ${$json.body.data.booking.date} a las ${$json.body.data.booking.time}.`\n  }\n} }}"
+      }
+    },
+    {
+      "id": "7",
+      "name": "Preparar Fechas Recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        20
+      ],
+      "parameters": {
+        "jsCode": "const booking = $json.body.data.booking;\nconst startIso = `${booking.date}T${booking.time}:00-06:00`;\nconst start = new Date(startIso);\nconst reminder24 = new Date(start.getTime() - (24 * 60 * 60 * 1000));\nconst reminder2 = new Date(start.getTime() - (2 * 60 * 60 * 1000));\n\nreturn [{\n  json: {\n    ...$json,\n    reminder24Iso: reminder24.toISOString(),\n    reminder2Iso: reminder2.toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "8",
+      "name": "Esperar 24h antes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        20
+      ],
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $json.reminder24Iso }}"
+      }
+    },
+    {
+      "id": "9",
+      "name": "WhatsApp Recordatorio 24h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        340,
+        20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: $json.body.data.lead.phone.replace(/\\s+/g, ''),\n  type: 'text',\n  text: {\n    body: `Recordatorio: tu cita con Mylder es manana ${$json.body.data.booking.date} a las ${$json.body.data.booking.time}.`\n  }\n} }}"
+      }
+    },
+    {
+      "id": "10",
+      "name": "Esperar 2h antes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        20
+      ],
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ $json.reminder2Iso }}"
+      }
+    },
+    {
+      "id": "11",
+      "name": "WhatsApp Recordatorio 2h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: $json.body.data.lead.phone.replace(/\\s+/g, ''),\n  type: 'text',\n  text: {\n    body: `Tu cita con Mylder es en 2 horas (${ $json.body.data.booking.time }). Te esperamos.`\n  }\n} }}"
+      }
+    },
+    {
+      "id": "12",
+      "name": "WhatsApp Interno Contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -540,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: ($env.WA_INTERNAL_NUMBER || '').replace(/\\s+/g, ''),\n  type: 'text',\n  text: {\n    body: `Nuevo contacto web: ${$json.body.data.lead.name} | ${$json.body.data.lead.service} | ${$json.body.data.lead.phone}`\n  }\n} }}"
+      }
+    },
+    {
+      "id": "13",
+      "name": "Contacto con OptIn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        300
+      ],
+      "parameters": {
+        "jsCode": "if ($json.body?.data?.lead?.whatsappOptIn === true) {\n  return items;\n}\nreturn [];"
+      }
+    },
+    {
+      "id": "14",
+      "name": "Preparar Mensaje por Servicio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const lead = $json.body?.data?.lead || {};\nconst serviceRaw = String(lead.service || 'Otro').trim();\nconst serviceKey = serviceRaw.toLowerCase();\n\nconst serviceCopyMap = {\n  'landing page': 'vimos que te interesaste por el servicio de Landing Page. Te compartimos una presentacion con enfoque en conversion, estructura comercial y tiempos de implementacion.',\n  'sitio corporativo': 'vimos que te interesaste por un Sitio Corporativo. Te compartimos una presentacion con estructura de marca, secciones clave y alcance tecnico.',\n  'desarrollo de software': 'vimos que te interesaste por Desarrollo de software. Te compartimos una presentacion con analisis, arquitectura y fases del proyecto.',\n  'apps moviles': 'vimos que te interesaste por Apps moviles. Te compartimos una presentacion con enfoque en experiencia, tecnologia y publicacion.',\n  'automatiza tu negocio': 'vimos que te interesaste por Automatiza tu negocio. Te compartimos una presentacion sobre automatizaciones, integraciones y ahorro operativo.',\n  'marketing digital': 'vimos que te interesaste por Marketing digital. Te compartimos una presentacion sobre estrategia, contenido y medicion de resultados.',\n  'branding': 'vimos que te interesaste por Branding. Te compartimos una presentacion con direccion visual, identidad y posicionamiento.',\n  'seo + analytics': 'vimos que te interesaste por SEO + Analytics. Te compartimos una presentacion con optimizacion, tracking y tableros de conversion.',\n  'consultoria estrategica': 'vimos que te interesaste por Consultoria estrategica. Te compartimos una presentacion con diagnostico, roadmap y prioridades.',\n  'paquete completo': 'vimos que te interesaste por el Paquete completo. Te compartimos una presentacion con la ruta integral de crecimiento digital.'\n};\n\n// IMPORTANTE: Reemplaza estas URLs por tus PDF reales.\nconst servicePdfMap = {\n  'landing page': 'https://example.com/pdfs/landing-page.pdf',\n  'sitio corporativo': 'https://example.com/pdfs/sitio-corporativo.pdf',\n  'desarrollo de software': 'https://example.com/pdfs/desarrollo-software.pdf',\n  'apps moviles': 'https://example.com/pdfs/apps-moviles.pdf',\n  'automatiza tu negocio': 'https://example.com/pdfs/automatiza-tu-negocio.pdf',\n  'marketing digital': 'https://example.com/pdfs/marketing-digital.pdf',\n  'branding': 'https://example.com/pdfs/branding.pdf',\n  'seo + analytics': 'https://example.com/pdfs/seo-analytics.pdf',\n  'consultoria estrategica': 'https://example.com/pdfs/consultoria-estrategica.pdf',\n  'paquete completo': 'https://example.com/pdfs/paquete-completo.pdf'\n};\n\nconst intro = serviceCopyMap[serviceKey] || 'gracias por contactarte con nosotros. Te compartimos una presentacion con mas detalle de lo que ofrecemos.';\nconst pdfUrl = servicePdfMap[serviceKey] || ($env.WA_DEFAULT_BROCHURE_URL || '');\nconst cleanPhone = String(lead.phone || '').replace(/\\s+/g, '');\nconst cleanName = String(lead.name || '');\n\nreturn [{\n  json: {\n    ...$json,\n    waClientPhone: cleanPhone,\n    waClientName: cleanName,\n    waServiceName: serviceRaw,\n    waIntroText: intro,\n    waServicePdfUrl: pdfUrl\n  }\n}];"
+      }
+    },
+    {
+      "id": "15",
+      "name": "WhatsApp Acuse Contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        120,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: $json.waClientPhone,\n  type: 'text',\n  text: {\n    body: `Hola ${$json.waClientName}, gracias por contactarte con nosotros; ${$json.waIntroText}`\n  }\n} }}"
+      }
+    },
+    {
+      "id": "16",
+      "name": "Tiene PDF Servicio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const url = String($json.waServicePdfUrl || '').trim();\nif (url && /^https?:\\/\\//i.test(url)) {\n  return items;\n}\nreturn [];"
+      }
+    },
+    {
+      "id": "17",
+      "name": "WhatsApp Enviar PDF Servicio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{$env.WA_PHONE_NUMBER_ID}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.WA_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  messaging_product: 'whatsapp',\n  to: $json.waClientPhone,\n  type: 'document',\n  document: {\n    link: $json.waServicePdfUrl,\n    filename: `Presentacion ${$json.waServiceName}.pdf`\n  }\n} }}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Mylder": {
+      "main": [
+        [
+          {
+            "node": "Validar Secreto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Secreto": {
+      "main": [
+        [
+          {
+            "node": "Solo Booking",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo Contacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo Booking": {
+      "main": [
+        [
+          {
+            "node": "Booking con OptIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking con OptIn": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Confirmacion Cita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Confirmacion Cita": {
+      "main": [
+        [
+          {
+            "node": "Preparar Fechas Recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Fechas Recordatorio": {
+      "main": [
+        [
+          {
+            "node": "Esperar 24h antes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar 24h antes": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Recordatorio 24h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Recordatorio 24h": {
+      "main": [
+        [
+          {
+            "node": "Esperar 2h antes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar 2h antes": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Recordatorio 2h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo Contacto": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Interno Contacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Interno Contacto": {
+      "main": [
+        [
+          {
+            "node": "Contacto con OptIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacto con OptIn": {
+      "main": [
+        [
+          {
+            "node": "Preparar Mensaje por Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Mensaje por Servicio": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Acuse Contacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Acuse Contacto": {
+      "main": [
+        [
+          {
+            "node": "Tiene PDF Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tiene PDF Servicio": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Enviar PDF Servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

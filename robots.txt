@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mylder.mx/sitemap.xml

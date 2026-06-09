@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-PR9NJLZC");
+  </script>
+  <!-- End Google Tag Manager -->
+  <title>Página no encontrada | Mylder Solutions</title>
+  <meta name="description" content="La página que buscas no existe. Te redirigimos al inicio de Mylder Solutions." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/png" href="./assets/favicon-mylder.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="legal-page thanks-page">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PR9NJLZC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <div class="aurora-layer" aria-hidden="true"></div>
+  <div class="noise"></div>
+
+  <header class="header" id="inicio">
+    <a class="brand" href="./index.html#inicio" aria-label="Ir al inicio">
+      <img class="brand-mark" src="./assets/logo-isotipo.png" alt="Isotipo Mylder Solutions" />
+      <span>MYLDER SOLUTIONS</span>
+    </a>
+  </header>
+
+  <main class="thankyou-main">
+    <article class="thankyou-card-tech">
+      <p class="kicker">ERROR 404</p>
+      <h1>Esta página no existe.</h1>
+      <p>Te redirigimos al inicio en <span id="countdown">4</span> segundos.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./index.html#inicio">Ir al inicio ahora</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <p>Mylder Solutions | <span class="js-current-year">2026</span> • Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".js-current-year").forEach((node) => {
+      node.textContent = String(new Date().getFullYear());
+    });
+
+    const countdown = document.querySelector("#countdown");
+    let seconds = 4;
+    const timer = setInterval(() => {
+      seconds -= 1;
+      if (countdown) countdown.textContent = String(Math.max(0, seconds));
+      if (seconds <= 0) {
+        clearInterval(timer);
+        window.location.replace("./index.html#inicio");
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

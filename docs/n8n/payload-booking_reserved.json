@@ -1,0 +1,30 @@
+{
+  "eventType": "booking_reserved",
+  "occurredAt": "2026-05-28T18:18:09Z",
+  "source": "mylder_web_proxy",
+  "requestMeta": {
+    "ip": "189.203.10.24",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+  },
+  "data": {
+    "lead": {
+      "name": "Kathia LCK",
+      "email": "kathia@email.com",
+      "phone": "+52 442 111 2233",
+      "service": "Landing Page",
+      "source": "Recomendacion",
+      "contactChannel": "WhatsApp",
+      "whatsappOptIn": true
+    },
+    "booking": {
+      "date": "2026-06-10",
+      "time": "17:00",
+      "timezone": "America/Mexico_City"
+    },
+    "upstream": {
+      "ok": true,
+      "version": "2026-05-21.1",
+      "eventId": "abc123@google.com"
+    }
+  }
+}

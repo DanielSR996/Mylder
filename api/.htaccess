@@ -1,0 +1,4 @@
+<FilesMatch "^(settings\.php)$">
+  Require all denied
+</FilesMatch>
+

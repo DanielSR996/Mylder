@@ -1,0 +1,7 @@
+# Configuración local con credenciales
+api/settings.php
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

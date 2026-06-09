@@ -1,0 +1,28 @@
+{
+  "eventType": "contact_submitted",
+  "occurredAt": "2026-05-28T18:15:43Z",
+  "source": "mylder_web_proxy",
+  "requestMeta": {
+    "ip": "189.203.10.24",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+  },
+  "data": {
+    "lead": {
+      "name": "Daniel Silva",
+      "email": "daniel@email.com",
+      "phone": "+52 442 424 1707",
+      "service": "Sistema Web",
+      "source": "Google",
+      "contactChannel": "WhatsApp",
+      "whatsappOptIn": true
+    },
+    "contact": {
+      "message": "Quiero cotizacion para un sistema web con panel de administracion."
+    },
+    "upstream": {
+      "ok": true,
+      "version": "2026-05-21.1",
+      "sent": true
+    }
+  }
+}
