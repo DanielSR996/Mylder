@@ -1,0 +1,79 @@
+/* Puente Tailwind ↔ estilos Mylder existentes */
+html {
+  scroll-behavior: smooth;
+}
+
+html.is-loaded body {
+  opacity: 1 !important;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Salta layout/paint de secciones fuera de pantalla (hero excluido: canvas + animación) */
+main > .section:not(.hero-waves),
+main > .features-section,
+main > .modern-services,
+main > .process-timeline-section,
+main > .clients-sparkles,
+main > .faq-section,
+main > .contact-section,
+main > .diff-bento-section,
+main > .booking-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+
+main > .photo-gallery-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+.bento-card__dots {
+  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.bento-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent, rgba(243, 196, 0, 0.15), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.bento-card:hover::after,
+.bento-card[data-bento-persistent]::after {
+  opacity: 1;
+}
+
+.process-timeline-section .section-head h2 {
+  max-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.is-loaded body {
+    transition: none;
+  }
+}

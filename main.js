@@ -1,3 +1,13 @@
+import { initGlowyWavesHero } from "./js/glowy-waves-hero.js";
+import { initHeroPillsMarquee } from "./js/hero-pills-marquee.js";
+import { initPhotoGallery } from "./js/photo-gallery.js";
+import { initSparklesClients } from "./js/sparkles-clients.js";
+import { initGlassBlogCards } from "./js/glass-blog-cards.js";
+import { initFeaturesSection } from "./js/features-section.js";
+import { initModernFeatureGrid } from "./js/modern-feature-grid.js";
+import { initPage } from "./js/page-init.js";
+import { onScrollRaf } from "./js/raf-visibility.js";
+
 const WHATSAPP_NUMBER = "524424241707";
 const STORAGE_KEY = "milder-booked-slots";
 const BOOKING_PROXY_CANDIDATES = [
@@ -49,7 +59,7 @@ const leadSource = document.querySelector("#leadSource");
 const leadContactChannel = document.querySelector("#leadContactChannel");
 const leadWhatsappConsent = document.querySelector("#leadWhatsappConsent");
 const googleFallbackLink = document.querySelector("#googleFallbackLink");
-const serviceCards = document.querySelectorAll(".service-card, .pillar, .panel, .timeline-step, .authority-card");
+const serviceCards = document.querySelectorAll(".modern-feature-card, .diff-bento-card, .panel, .timeline-step, .features-card");
 const tiltSurfaces = document.querySelectorAll(".tilt-surface");
 const heroOrb = document.querySelector(".hero-orb");
 const bookingCtaShell = document.querySelector(".booking-cta-shell");
@@ -69,7 +79,9 @@ const contactMessage = document.querySelector("#contactMessage");
 const contactWhatsappConsent = document.querySelector("#contactWhatsappConsent");
 const header = document.querySelector(".header");
 const mobileMenuBtn = document.querySelector("#mobileMenuBtn");
-const navSectionLinks = [...document.querySelectorAll(".nav a[href^='#']")];
+const navSectionLinks = [...document.querySelectorAll(".nav-tubelight__link[href^='#']")];
+const navTubelightLamp = document.querySelector("#navTubelightLamp");
+const navTubelightTrack = document.querySelector(".nav-tubelight__track");
 const whatsappFab = document.querySelector("#whatsappFab");
 const whatsappFabBtn = document.querySelector("#whatsappFabBtn");
 const whatsappFabCard = document.querySelector("#whatsappFabCard");
@@ -78,9 +90,6 @@ const whatsappFabLink = document.querySelector("#whatsappFabLink");
 const showcaseMainImage = document.querySelector("#showcaseMainImage");
 const showcaseThumbs = [...document.querySelectorAll(".showcase-thumb")];
 const blogCarouselWraps = [...document.querySelectorAll("[data-blog-carousel]")];
-const clientsTrackWrap = document.querySelector(".logo-track-wrap");
-const clientsTrack = document.querySelector(".logo-track");
-
 const isGoogleMode = BOOKING_PROXY_CANDIDATES.length > 0;
 let selectedDateKey = null;
 let selectedDateLabel = null;
@@ -106,31 +115,21 @@ setupSmartCtas();
 setupTypewriter();
 updateBookingModeLabel();
 setupGoogleFallbackLink();
-setupBookingScrollFx();
 setupWhatsappFab();
 setupShowcaseGallery();
 setupBlogCarousel();
-setupClientsCarousel();
+initGlowyWavesHero();
+initHeroPillsMarquee();
+initPhotoGallery();
+initSparklesClients();
+initGlassBlogCards();
+initFeaturesSection();
+initModernFeatureGrid();
+initPage();
 
 async function setupAnimations() {
   try {
-    const { animate, inView, hover, stagger } = await import("https://cdn.jsdelivr.net/npm/motion@12.37.0/+esm");
-
-    animate(".hero h1", { opacity: [0.35, 1], y: [24, 0], filter: ["blur(12px)", "blur(0px)"] }, { duration: 1.05, easing: "ease-out" });
-    animate(".hero-copy", { opacity: [0, 1], y: [18, 0] }, { duration: 0.75, delay: 0.2 });
-    animate(".hero-badges span", { opacity: [0, 1], scale: [0.9, 1] }, { duration: 0.42, delay: stagger(0.07, { start: 0.4 }) });
-    animate(".floating-card", { y: [20, 0], opacity: [0, 1] }, { duration: 0.72, delay: stagger(0.1, { start: 0.35 }) });
-
-    inView(".reveal", (element) => {
-      animate(element, { opacity: [0, 1], y: [22, 0], filter: ["blur(5px)", "blur(0px)"] }, { duration: 0.64, easing: "ease-out" });
-    });
-
-    document.querySelectorAll(".service-card, .pillar, .panel, .logo-item, .timeline-step, .shot, .authority-card").forEach((element) => {
-      hover(element, () => {
-        animate(element, { y: -4, scale: 1.01 }, { duration: 0.24, easing: "ease-out" });
-        return () => animate(element, { y: 0, scale: 1 }, { duration: 0.28 });
-      });
-    });
+    const { animate } = await import("https://cdn.jsdelivr.net/npm/motion@12.37.0/+esm");
 
     if (heroOrb) {
       animate(heroOrb, { y: [-10, 8, -10], x: [-7, 6, -7], scale: [1, 1.04, 1] }, { duration: 8.4, repeat: Infinity, easing: "ease-in-out" });
@@ -191,7 +190,7 @@ function setupBlogCarousel() {
   blogCarouselWraps.forEach((wrap) => {
     const viewport = wrap.querySelector(".blog-carousel");
     const track = wrap.querySelector(".blog-track");
-    const cards = [...wrap.querySelectorAll(".blog-card")];
+    const cards = [...wrap.querySelectorAll(".glass-blog-card")];
     const prevBtn = wrap.querySelector(".blog-carousel-arrow.is-prev");
     const nextBtn = wrap.querySelector(".blog-carousel-arrow.is-next");
     const dotsRoot = wrap.querySelector(".blog-carousel-dots");
@@ -254,169 +253,44 @@ function setupBlogCarousel() {
   });
 }
 
-function setupClientsCarousel() {
-  if (!clientsTrackWrap || !clientsTrack) return;
-
-  const MOBILE_BREAKPOINT = 820;
-  let intervalId = null;
-  let resumeTimer = null;
-  let isEnabled = false;
-  let isPaused = false;
-  let currentIndex = 0;
-  const baseItems = [...clientsTrack.querySelectorAll(".logo-item:not([data-clone='true'])")];
-
-  if (!baseItems.length) return;
-
-  const clearTimers = () => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    if (resumeTimer) {
-      clearTimeout(resumeTimer);
-      resumeTimer = null;
-    }
-  };
-
-  const getStepSize = () => {
-    const item = clientsTrack.querySelector(".logo-item");
-    if (!item) return 0;
-    const itemWidth = item.getBoundingClientRect().width;
-    const gap = parseFloat(window.getComputedStyle(clientsTrack).gap || "0");
-    return itemWidth + gap;
-  };
-
-  const moveTo = (index, instant = false) => {
-    const step = getStepSize();
-    if (!step) return;
-    clientsTrack.style.transition = instant ? "none" : "transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1)";
-    clientsTrack.style.transform = `translateX(-${index * step}px)`;
-  };
-
-  const startAutoPlay = () => {
-    if (!isEnabled || isPaused) return;
-    clearTimers();
-    intervalId = setInterval(() => {
-      currentIndex += 1;
-      moveTo(currentIndex);
-    }, 2800);
-  };
-
-  const pauseAutoPlay = () => {
-    isPaused = true;
-    clearTimers();
-  };
-
-  const resumeAutoPlay = (delay = 0) => {
-    clearTimers();
-    resumeTimer = setTimeout(() => {
-      isPaused = false;
-      startAutoPlay();
-    }, delay);
-  };
-
-  const removeClones = () => {
-    clientsTrack.querySelectorAll(".logo-item[data-clone='true']").forEach((node) => node.remove());
-  };
-
-  const enableMobileCarousel = () => {
-    if (isEnabled || window.innerWidth > MOBILE_BREAKPOINT) return;
-    isEnabled = true;
-    currentIndex = 0;
-    isPaused = false;
-
-    baseItems.forEach((item) => {
-      const clone = item.cloneNode(true);
-      clone.setAttribute("data-clone", "true");
-      clone.setAttribute("aria-hidden", "true");
-      clientsTrack.appendChild(clone);
-    });
-
-    clientsTrackWrap.classList.add("is-mobile-carousel");
-    clientsTrack.classList.add("is-mobile-carousel");
-    moveTo(0, true);
-    requestAnimationFrame(() => startAutoPlay());
-  };
-
-  const disableMobileCarousel = () => {
-    if (!isEnabled) return;
-    isEnabled = false;
-    isPaused = false;
-    clearTimers();
-    currentIndex = 0;
-    removeClones();
-    clientsTrackWrap.classList.remove("is-mobile-carousel");
-    clientsTrack.classList.remove("is-mobile-carousel");
-    clientsTrack.style.transition = "none";
-    clientsTrack.style.transform = "translateX(0)";
-  };
-
-  const syncModeByViewport = () => {
-    if (window.innerWidth <= MOBILE_BREAKPOINT) enableMobileCarousel();
-    else disableMobileCarousel();
-  };
-
-  clientsTrack.addEventListener("transitionend", () => {
-    if (!isEnabled) return;
-    if (currentIndex >= baseItems.length) {
-      currentIndex = 0;
-      moveTo(currentIndex, true);
-    }
-  });
-
-  clientsTrackWrap.addEventListener("mouseenter", () => {
-    if (!isEnabled) return;
-    pauseAutoPlay();
-  });
-
-  clientsTrackWrap.addEventListener("mouseleave", () => {
-    if (!isEnabled) return;
-    resumeAutoPlay(0);
-  });
-
-  clientsTrackWrap.addEventListener("focusin", () => {
-    if (!isEnabled) return;
-    pauseAutoPlay();
-  });
-
-  clientsTrackWrap.addEventListener("focusout", () => {
-    if (!isEnabled) return;
-    resumeAutoPlay(120);
-  });
-
-  clientsTrackWrap.addEventListener("touchstart", () => {
-    if (!isEnabled) return;
-    pauseAutoPlay();
-  }, { passive: true });
-
-  clientsTrackWrap.addEventListener("touchend", () => {
-    if (!isEnabled) return;
-    resumeAutoPlay(1400);
-  }, { passive: true });
-
-  window.addEventListener("resize", syncModeByViewport);
-  syncModeByViewport();
-}
-
 function setupPointerEffects() {
+  const canTilt = () => window.innerWidth >= 980 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   serviceCards.forEach((card) => {
+    let raf = 0;
+    let lastX = 0;
+    let lastY = 0;
     card.addEventListener("pointermove", (event) => {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-      card.style.setProperty("--my", `${event.clientY - rect.top}px`);
-    });
+      lastX = event.clientX;
+      lastY = event.clientY;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${lastX - rect.left}px`);
+        card.style.setProperty("--my", `${lastY - rect.top}px`);
+      });
+    }, { passive: true });
   });
 
   tiltSurfaces.forEach((surface) => {
+    let raf = 0;
+    let lastEvent = null;
     surface.addEventListener("pointermove", (event) => {
-      if (window.innerWidth < 980) return;
-      const rect = surface.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      surface.style.transform = `perspective(900px) rotateY(${x * 4}deg) rotateX(${y * -3.2}deg)`;
-    });
+      if (!canTilt()) return;
+      lastEvent = event;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        if (!lastEvent) return;
+        const rect = surface.getBoundingClientRect();
+        const x = (lastEvent.clientX - rect.left) / rect.width - 0.5;
+        const y = (lastEvent.clientY - rect.top) / rect.height - 0.5;
+        surface.style.transform = `perspective(900px) rotateY(${x * 4}deg) rotateX(${y * -3.2}deg)`;
+      });
+    }, { passive: true });
     surface.addEventListener("pointerleave", () => {
-      surface.style.transform = "perspective(900px) rotateY(0deg) rotateX(0deg)";
+      surface.style.transform = "";
     });
   });
 }
@@ -437,8 +311,6 @@ function setupHeaderUi() {
   const updateScrolledState = () => {
     header.classList.toggle("scrolled", window.scrollY > 14);
   };
-  updateScrolledState();
-  window.addEventListener("scroll", updateScrolledState, { passive: true });
 
   if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener("click", () => {
@@ -469,58 +341,124 @@ function setupHeaderUi() {
     .filter(Boolean);
 
   let activeSectionId = "";
-  const setActiveLink = (id) => {
-    if (!id || id === activeSectionId) return;
+  let lampRaf = 0;
+
+  const positionTubelightLamp = () => {
+    if (!navTubelightLamp || !navTubelightTrack || window.innerWidth <= 820) {
+      navTubelightLamp?.classList.remove("is-visible");
+      return;
+    }
+    const activeLink = navSectionLinks.find((link) => link.classList.contains("active"));
+    if (!activeLink) {
+      navTubelightLamp.classList.remove("is-visible");
+      return;
+    }
+    const trackRect = navTubelightTrack.getBoundingClientRect();
+    const linkRect = activeLink.getBoundingClientRect();
+    const x = linkRect.left - trackRect.left;
+    navTubelightLamp.style.width = `${linkRect.width}px`;
+    navTubelightLamp.style.transform = `translateX(${x}px)`;
+    navTubelightLamp.classList.add("is-visible");
+  };
+
+  const scheduleTubelightLamp = () => {
+    if (lampRaf) return;
+    lampRaf = requestAnimationFrame(() => {
+      lampRaf = 0;
+      positionTubelightLamp();
+    });
+  };
+
+  const setActiveLink = (id, { force = false } = {}) => {
+    if (!id) return;
+    if (!force && id === activeSectionId) return;
     activeSectionId = id;
     sections.forEach(({ link, target }) => {
       link.classList.toggle("active", target.id === id);
     });
+    scheduleTubelightLamp();
+    // Segundo frame por si el layout del nav cambió al activar
+    requestAnimationFrame(scheduleTubelightLamp);
   };
 
   const hasSection = (id) => sections.some(({ target }) => target.id === id);
 
+  /** Marca en viewport (px desde arriba) — misma referencia que getBoundingClientRect */
+  const getScrollMarker = () => (header.getBoundingClientRect().height || 0) + 56;
+
   const getActiveSectionByScroll = () => {
     if (!sections.length) return "";
-    const headerHeight = header.getBoundingClientRect().height || 0;
-    const markerY = window.scrollY + headerHeight + 42;
+
+    const marker = getScrollMarker();
     let currentId = sections[0].target.id;
+    let intersectingId = "";
 
     sections.forEach(({ target }) => {
-      if (target.offsetTop <= markerY) currentId = target.id;
+      const rect = target.getBoundingClientRect();
+      const { top, bottom } = rect;
+
+      // La sección cruza la línea del header → prioridad máxima
+      if (top <= marker && bottom > marker + 24) {
+        intersectingId = target.id;
+      }
+
+      // Fallback: última sección cuyo inicio ya pasó el marcador
+      if (top <= marker) {
+        currentId = target.id;
+      }
     });
 
-    const reachedBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 3;
+    const reachedBottom =
+      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 12;
     if (reachedBottom) {
-      currentId = sections[sections.length - 1].target.id;
+      return sections[sections.length - 1].target.id;
     }
 
-    return currentId;
+    return intersectingId || currentId;
   };
 
-  let ticking = false;
   const syncActiveLink = () => {
     const currentId = getActiveSectionByScroll();
     if (currentId) setActiveLink(currentId);
   };
 
-  const onScrollSpy = () => {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(() => {
-      syncActiveLink();
-      ticking = false;
-    });
+  const onScrollFrame = () => {
+    updateScrolledState();
+    syncActiveLink();
+    scheduleTubelightLamp();
+    updateBookingScrollFx();
   };
 
   navSectionLinks.forEach((link) => {
     link.addEventListener("click", () => {
       const targetId = (link.getAttribute("href") || "").replace("#", "");
-      if (targetId && hasSection(targetId)) setActiveLink(targetId);
+      if (!targetId || !hasSection(targetId)) return;
+      setActiveLink(targetId, { force: true });
+      // Re-sincronizar durante scroll suave hasta asentar el indicador
+      let frames = 0;
+      const followSmoothScroll = () => {
+        syncActiveLink();
+        scheduleTubelightLamp();
+        if (frames < 45) {
+          frames += 1;
+          requestAnimationFrame(followSmoothScroll);
+        }
+      };
+      requestAnimationFrame(followSmoothScroll);
     });
   });
 
-  window.addEventListener("scroll", onScrollSpy, { passive: true });
-  window.addEventListener("resize", onScrollSpy);
+  onScrollRaf(onScrollFrame);
+  window.addEventListener("resize", () => {
+    onScrollFrame();
+    scheduleTubelightLamp();
+  });
+  updateScrolledState();
+  onScrollFrame();
+  window.addEventListener("load", () => {
+    syncActiveLink();
+    scheduleTubelightLamp();
+  });
   window.addEventListener("hashchange", () => {
     const hashId = window.location.hash.replace("#", "");
     if (hashId && hasSection(hashId)) setActiveLink(hashId);
@@ -692,20 +630,14 @@ function resetWizardFlow() {
   updateSummary();
 }
 
-function setupBookingScrollFx() {
+function updateBookingScrollFx() {
   if (!bookingCtaShell) return;
-  window.addEventListener(
-    "scroll",
-    () => {
-      const rect = bookingCtaShell.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-      const progress = Math.max(-1, Math.min(1, (vh * 0.55 - rect.top) / vh));
-      const translate = progress * -8;
-      const scale = 1 + Math.max(0, progress) * 0.018;
-      bookingCtaShell.style.transform = `translateY(${translate}px) scale(${scale})`;
-    },
-    { passive: true }
-  );
+  const rect = bookingCtaShell.getBoundingClientRect();
+  const vh = window.innerHeight || 1;
+  const progress = Math.max(-1, Math.min(1, (vh * 0.55 - rect.top) / vh));
+  const translate = progress * -8;
+  const scale = 1 + Math.max(0, progress) * 0.018;
+  bookingCtaShell.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
 }
 
 function setupWhatsappFab() {

@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600&family=Syne:wght@600;700;800&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="./styles.css" />
@@ -53,7 +53,12 @@
       <img class="brand-mark" src="./assets/logo-isotipo.png" alt="Isotipo Mylder Solutions" />
       <span>MYLDER SOLUTIONS</span>
     </a>
-    <nav class="nav" id="mainNav">
+    <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav nav--simple" id="mainNav" aria-label="Navegación principal">
       <a href="./index.html#servicios">Servicios</a>
       <a href="./index.html#clientes">Clientes</a>
       <a href="./index.html#agenda">Agenda</a>
@@ -167,6 +172,7 @@
       <p>Mylder Solutions | <span class="js-current-year">2026</span> • Todos los derechos reservados.</p>
     </div>
   </footer>
+  <script src="./js/subpage-nav.js" defer></script>
   <script src="./tab-attention.js" defer></script>
   <script>
     document.querySelectorAll(".js-current-year").forEach((node) => {
