@@ -2,9 +2,9 @@
 export function initPage() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  requestAnimationFrame(() => {
-    document.documentElement.classList.add("is-loaded");
-  });
+  const markLoaded = () => document.documentElement.classList.add("is-loaded");
+  requestAnimationFrame(markLoaded);
+  window.setTimeout(markLoaded, 1200);
 
   if (reducedMotion) {
     document.querySelectorAll(".reveal").forEach((el) => el.classList.add("is-visible"));

@@ -104,6 +104,8 @@ if ($action === ACTION_AVAILABILITY) {
 }
 
 if ($action === ACTION_RESERVE) {
+  require_once __DIR__ . "/mailer.php";
+
   $payload = [
     "action" => ACTION_RESERVE,
     "token" => APPS_SCRIPT_TOKEN,
@@ -131,32 +133,53 @@ if ($action === ACTION_RESERVE) {
     respondError("INVALID_DATA", "Nombre y email son obligatorios", 422);
   }
 
+  if (!$payload["whatsappOptIn"]) {
+    respondError("INVALID_CONSENT", "Debes aceptar recibir confirmación y recordatorios por WhatsApp", 422);
+  }
+
   $upstream = forwardToAppsScript($payload, "GET");
   $upstreamOk = isset($upstream["body"]["ok"]) ? (bool) $upstream["body"]["ok"] : ($upstream["http_code"] < 400);
-  $n8n = $upstreamOk
-    ? notifyN8n("booking_reserved", [
-      "lead" => [
-        "name" => $payload["name"],
-        "email" => $payload["email"],
-        "phone" => $payload["phone"],
-        "service" => $payload["service"],
-        "source" => $payload["source"],
-        "contactChannel" => $payload["contactChannel"],
-        "whatsappOptIn" => $payload["whatsappOptIn"]
-      ],
-      "booking" => [
-        "date" => $payload["date"],
-        "time" => $payload["time"],
-        "timezone" => "America/Mexico_City"
-      ],
-      "upstream" => $upstream["body"]
-    ])
-    : ["enabled" => isN8nConfigured(), "sent" => false, "reason" => "skipped_upstream_error"];
-  $responseBody = attachN8nStatus($upstream["body"], $n8n);
-  respondUpstream($responseBody, $upstream["http_code"]);
+  if (!$upstreamOk) {
+    $n8n = ["enabled" => isN8nConfigured(), "sent" => false, "reason" => "skipped_upstream_error"];
+    $responseBody = attachN8nStatus($upstream["body"], $n8n);
+    respondUpstream($responseBody, $upstream["http_code"]);
+  }
+
+  $emailStatus = ["internal" => false, "confirmation" => false];
+  try {
+    $emailStatus = mailerSendBookingEmails($payload);
+  } catch (Throwable $mailErr) {
+    $emailStatus = ["internal" => false, "confirmation" => false, "error" => $mailErr->getMessage()];
+  }
+
+  $n8n = notifyN8n("booking_reserved", [
+    "lead" => [
+      "name" => $payload["name"],
+      "email" => $payload["email"],
+      "phone" => $payload["phone"],
+      "service" => $payload["service"],
+      "source" => $payload["source"],
+      "contactChannel" => $payload["contactChannel"],
+      "whatsappOptIn" => $payload["whatsappOptIn"]
+    ],
+    "booking" => [
+      "date" => $payload["date"],
+      "time" => $payload["time"],
+      "timezone" => "America/Mexico_City"
+    ],
+    "email" => $emailStatus,
+    "upstream" => $upstream["body"]
+  ]);
+
+  $responseBody = attachN8nStatus(array_merge($upstream["body"], [
+    "email" => $emailStatus
+  ]), $n8n);
+  respondUpstream($responseBody, 200);
 }
 
 if ($action === ACTION_CONTACT) {
+  require_once __DIR__ . "/mailer.php";
+
   $payload = [
     "action" => ACTION_CONTACT,
     "token" => APPS_SCRIPT_TOKEN,
@@ -174,28 +197,50 @@ if ($action === ACTION_CONTACT) {
     respondError("INVALID_DATA", "Nombre, email, teléfono y mensaje son obligatorios", 422);
   }
 
-  // Apps Script actual acepta contacto por GET (doGet); mantenemos proxy en POST público.
+  if (!$payload["whatsappOptIn"]) {
+    respondError("INVALID_CONSENT", "Debes aceptar recibir confirmaciones y seguimiento por WhatsApp", 422);
+  }
+
+  $emailStatus = ["internal" => false, "confirmation" => false];
+  try {
+    $emailStatus = mailerSendContactEmails($payload);
+  } catch (Throwable $mailErr) {
+    respondError("EMAIL_TEMPLATE_ERROR", "No se pudo preparar el correo: " . $mailErr->getMessage(), 500);
+  }
+
+  if (!$emailStatus["internal"]) {
+    respondError(
+      "EMAIL_FAILED",
+      "No se pudo enviar la notificación a contacto@mylder.mx. Verifica MAIL_FROM_EMAIL en settings.php y el correo del hosting.",
+      502
+    );
+  }
+
   $upstream = forwardToAppsScript($payload, "GET");
   $upstreamOk = isset($upstream["body"]["ok"]) ? (bool) $upstream["body"]["ok"] : ($upstream["http_code"] < 400);
-  $n8n = $upstreamOk
-    ? notifyN8n("contact_submitted", [
-      "lead" => [
-        "name" => $payload["name"],
-        "email" => $payload["email"],
-        "phone" => $payload["phone"],
-        "service" => $payload["service"],
-        "source" => $payload["source"],
-        "contactChannel" => $payload["contactChannel"],
-        "whatsappOptIn" => $payload["whatsappOptIn"]
-      ],
-      "contact" => [
-        "message" => $payload["message"]
-      ],
-      "upstream" => $upstream["body"]
-    ])
-    : ["enabled" => isN8nConfigured(), "sent" => false, "reason" => "skipped_upstream_error"];
-  $responseBody = attachN8nStatus($upstream["body"], $n8n);
-  respondUpstream($responseBody, $upstream["http_code"]);
+  $n8n = notifyN8n("contact_submitted", [
+    "lead" => [
+      "name" => $payload["name"],
+      "email" => $payload["email"],
+      "phone" => $payload["phone"],
+      "service" => $payload["service"],
+      "source" => $payload["source"],
+      "contactChannel" => $payload["contactChannel"],
+      "whatsappOptIn" => $payload["whatsappOptIn"]
+    ],
+    "contact" => [
+      "message" => $payload["message"]
+    ],
+    "email" => $emailStatus,
+    "upstream" => $upstream["body"] ?? null
+  ]);
+  $responseBody = attachN8nStatus([
+    "ok" => true,
+    "sent" => true,
+    "email" => $emailStatus,
+    "appsScript" => $upstream["body"] ?? null
+  ], $n8n);
+  respondUpstream($responseBody, 200);
 }
 
 respondError("UNSUPPORTED_ACTION", "Acción no soportada", 400);

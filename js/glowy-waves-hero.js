@@ -1,5 +1,5 @@
 /** Glowy Waves Hero — port de glowy-waves-hero-shadcnui (21st.dev) */
-import { bindRafVisibility } from "./raf-visibility.js";
+import { bindRafVisibility } from "./raf-visibility.js?v=20260612";
 
 const WAVE_PALETTE = [
   { offset: 0, amplitude: 70, frequency: 0.003, color: "rgba(4, 30, 66, 0.85)", opacity: 0.45 },

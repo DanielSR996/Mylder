@@ -1,5 +1,5 @@
 /** Clients — sparkles + infinite slider + progressive blur (21st.dev demo, vanilla) */
-import { bindRafVisibility } from "./raf-visibility.js";
+import { bindRafVisibility } from "./raf-visibility.js?v=20260612";
 
 const SLIDER_DURATION = 30;
 const BLUR_LAYERS = 4;

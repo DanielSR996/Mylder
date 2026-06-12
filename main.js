@@ -1,12 +1,12 @@
-import { initGlowyWavesHero } from "./js/glowy-waves-hero.js";
-import { initHeroPillsMarquee } from "./js/hero-pills-marquee.js";
-import { initPhotoGallery } from "./js/photo-gallery.js";
-import { initSparklesClients } from "./js/sparkles-clients.js";
-import { initGlassBlogCards } from "./js/glass-blog-cards.js";
-import { initFeaturesSection } from "./js/features-section.js";
-import { initModernFeatureGrid } from "./js/modern-feature-grid.js";
-import { initPage } from "./js/page-init.js";
-import { onScrollRaf } from "./js/raf-visibility.js";
+import { initGlowyWavesHero } from "./js/glowy-waves-hero.js?v=20260612";
+import { initHeroPillsMarquee } from "./js/hero-pills-marquee.js?v=20260612";
+import { initPhotoGallery } from "./js/photo-gallery.js?v=20260612";
+import { initSparklesClients } from "./js/sparkles-clients.js?v=20260612";
+import { initGlassBlogCards } from "./js/glass-blog-cards.js?v=20260612";
+import { initFeaturesSection } from "./js/features-section.js?v=20260612";
+import { initModernFeatureGrid } from "./js/modern-feature-grid.js?v=20260612";
+import { initPage } from "./js/page-init.js?v=20260612";
+import { onScrollRaf } from "./js/raf-visibility.js?v=20260612";
 
 const WHATSAPP_NUMBER = "524424241707";
 const STORAGE_KEY = "milder-booked-slots";
@@ -834,6 +834,18 @@ async function handleBookingClick(event) {
   if (bookNow.classList.contains("btn-disabled")) return;
   if (!selectedDateKey || !selectedTime) return;
 
+  if (!leadWhatsappConsent?.checked) {
+    showToast("Debes aceptar recibir confirmación y recordatorios por WhatsApp para reservar.");
+    leadWhatsappConsent?.focus();
+    return;
+  }
+
+  const leadData = getLeadData();
+  if (!leadData.name || !leadData.email || !leadData.phone) {
+    showToast("Completa nombre, correo y teléfono antes de reservar.");
+    return;
+  }
+
   const whatsappLink = bookNow.href;
   const previousText = bookNow.textContent;
   bookNow.textContent = "Reservando...";
@@ -931,6 +943,12 @@ async function handleContactSubmit(event) {
   };
   payload.phone = buildInternationalPhone(payload.phoneCode, contactPhone?.value.trim() || "");
 
+  if (!contactWhatsappConsent?.checked) {
+    showToast("Debes aceptar recibir confirmaciones y seguimiento por WhatsApp para enviar el formulario.");
+    contactWhatsappConsent?.focus();
+    return;
+  }
+
   if (!payload.name || !payload.email || !payload.phone || !payload.message) {
     showToast("Completa todos los campos del formulario.");
     return;
@@ -942,15 +960,9 @@ async function handleContactSubmit(event) {
     contactSubmit.disabled = true;
   }
 
-  let sent = true;
-  let errorText = "";
-  if (isGoogleMode) {
-    const result = await submitContactOnGoogle(payload);
-    sent = result.ok;
-    errorText = result.error || "";
-  }
+  const result = await submitContactOnGoogle(payload);
 
-  if (sent) {
+  if (result.ok) {
     trackEvent("contact_submit", {
       status: "success",
       method: "proxy",
@@ -960,31 +972,15 @@ async function handleContactSubmit(event) {
     contactForm.reset();
     redirectToThanksPage("./gracias.html");
   } else {
-    const fallbackResult = await submitContactByFallbackEmail(payload);
-    if (fallbackResult.ok) {
-      trackEvent("contact_submit", {
-        status: "success",
-        method: "fallback_formsubmit",
-        service: payload.service || "",
-        source: payload.source || ""
-      });
-      showToast("Formulario enviado correctamente.");
-      contactForm.reset();
-      redirectToThanksPage("./gracias.html");
-    } else {
-      trackEvent("contact_submit", {
-        status: "fail",
-        method: "proxy_and_fallback",
-        service: payload.service || "",
-        source: payload.source || "",
-        reason: fallbackResult.error || errorText || "unknown"
-      });
-      const finalError = fallbackResult.error || errorText || "No se pudo enviar tu formulario.";
-      showToast(`No se pudo enviar: ${finalError}`);
-      const fallbackUrl = buildContactFallbackWhatsappUrl(payload);
-      const popup = window.open(fallbackUrl, "_blank", "noopener,noreferrer");
-      if (!popup) window.location.href = fallbackUrl;
-    }
+    trackEvent("contact_submit", {
+      status: "fail",
+      method: "proxy",
+      service: payload.service || "",
+      source: payload.source || "",
+      reason: result.error || "unknown"
+    });
+    const finalError = result.error || "No se pudo enviar tu formulario.";
+    showToast(`No se pudo enviar: ${finalError}`);
   }
 
   if (contactSubmit) {
@@ -1005,7 +1001,8 @@ async function submitContactOnGoogle(payload) {
       message: payload.message,
       whatsappOptIn: payload.whatsappOptIn
     }, "POST");
-    return { ok: Boolean(data.ok), error: data.error || "" };
+    const errorMessage = data.error || data.message || "";
+    return { ok: Boolean(data.ok), error: errorMessage };
   } catch {
     return { ok: false, error: "Error de conexión al enviar el formulario" };
   }
@@ -1021,9 +1018,12 @@ async function callBookingProxy(action, payload = {}, method = "POST") {
         const query = new URLSearchParams({ action, ...payload });
         const response = await fetch(`${candidate}?${query.toString()}`, { method: "GET" });
         const data = await response.json().catch(() => null);
-        if (!response.ok || !data) {
+        if (!data) {
           lastError = `GET ${candidate} (${response.status})`;
           continue;
+        }
+        if (!response.ok) {
+          lastError = data.error || data.message || `GET ${candidate} (${response.status})`;
         }
         return data;
       }
@@ -1034,9 +1034,12 @@ async function callBookingProxy(action, payload = {}, method = "POST") {
         body: JSON.stringify({ action, ...payload })
       });
       const data = await response.json().catch(() => null);
-      if (!response.ok || !data) {
+      if (!data) {
         lastError = `POST ${candidate} (${response.status})`;
         continue;
+      }
+      if (!response.ok) {
+        lastError = data.error || data.message || `POST ${candidate} (${response.status})`;
       }
       return data;
     } catch {
@@ -1045,60 +1048,6 @@ async function callBookingProxy(action, payload = {}, method = "POST") {
   }
 
   throw new Error(`Proxy no disponible: ${lastError}`);
-}
-
-function buildContactFallbackWhatsappUrl(payload) {
-  const text = [
-    "Hola, no se pudo enviar el formulario web y quiero continuar por WhatsApp.",
-    `Nombre: ${payload.name}`,
-    `Email: ${payload.email}`,
-    `Telefono: ${payload.phone}`,
-    `Servicio: ${payload.service}`,
-    `Origen: ${payload.source}`,
-    `Contacto preferido: ${payload.contactChannel}`,
-    `Mensaje: ${payload.message}`
-  ].join("\n");
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
-
-async function submitContactByFallbackEmail(payload) {
-  try {
-    const fallbackEndpoint = "https://formsubmit.co/ajax/danielsilvaramirez.dsr@gmail.com";
-    const bodyParams = new URLSearchParams({
-      name: payload.name,
-      email: payload.email,
-      message: [
-        `Telefono: ${payload.phone}`,
-        `Servicio: ${payload.service}`,
-        `Origen: ${payload.source}`,
-        `Contacto preferido: ${payload.contactChannel}`,
-        "",
-        payload.message
-      ].join("\n"),
-      _subject: `Nuevo contacto web: ${payload.name} | ${payload.service}`,
-      _captcha: "false",
-      _template: "table"
-    });
-    const response = await fetch(fallbackEndpoint, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-      },
-      body: bodyParams.toString()
-    });
-    const data = await response.json().catch(() => ({}));
-    if (String(data?.success || "").toLowerCase() === "true") {
-      return { ok: true };
-    }
-    const message = String(data?.message || "");
-    if (/activation/i.test(message)) {
-      return { ok: false, error: "Activa el formulario de FormSubmit desde el correo de verificación." };
-    }
-    return { ok: false, error: message || "No se pudo enviar por fallback." };
-  } catch {
-    return { ok: false, error: "Error de conexión en el fallback de correo." };
-  }
 }
 
 function showThankYouSection() {

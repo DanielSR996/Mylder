@@ -18,3 +18,8 @@ const PROXY_RATE_LIMIT = [
 const N8N_WEBHOOK_URL = "";
 const N8N_WEBHOOK_SECRET = "";
 const N8N_WEBHOOK_TIMEOUT_SECONDS = 4;
+
+// Correos del formulario de contacto (plantillas HTML en /email-templates)
+const CONTACT_NOTIFY_EMAILS = "contacto@mylder.mx,danielsilvaramirez.dsr@gmail.com";
+const MAIL_FROM_EMAIL = "contacto@mylder.mx";
+const MAIL_FROM_NAME = "Mylder Solutions";

@@ -9,6 +9,10 @@ const INTERNAL_ALERT_EMAILS = [
   "contacto@mylder.mx",
   "danielsilvaramirez.dsr@gmail.com"
 ].join(",");
+const BRAND_SITE_URL = "https://mylder.mx/";
+const BRAND_LOGO_URL = "https://mylder.mx/assets/logo-isotipo.png";
+const BRAND_REPLY_TO = "contacto@mylder.mx";
+const BRAND_FROM_NAME = "Mylder Solutions";
 
   function doGet(e) {
     try {
@@ -155,14 +159,37 @@ const INTERNAL_ALERT_EMAILS = [
         sendInvites: Boolean(email)
       });
 
-      // Aviso interno opcional
       MailApp.sendEmail({
         to: INTERNAL_ALERT_EMAILS,
         subject: `Nueva reunión agendada: ${date} ${time} | ${service}`,
-        body: `${description}\n\nFecha: ${date}\nHora: ${time}`,
-        replyTo: email || "contacto@mylder.mx",
+        htmlBody: buildInternalBookingEmail_({
+          name: name,
+          email: email,
+          phone: phone,
+          service: service,
+          source: source,
+          contactChannel: contactChannel,
+          date: date,
+          time: time
+        }),
+        replyTo: email || BRAND_REPLY_TO,
         name: "Agenda Web Mylder"
       });
+
+      if (email) {
+        MailApp.sendEmail({
+          to: email,
+          subject: `Reunión confirmada: ${formatDateLabel_(date)} ${time} | Mylder Solutions`,
+          htmlBody: buildBookingConfirmationEmail_({
+            name: name,
+            date: date,
+            time: time,
+            service: service
+          }),
+          replyTo: BRAND_REPLY_TO,
+          name: BRAND_FROM_NAME
+        });
+      }
 
       return resultOk({ eventId: event.getId() });
     } finally {
@@ -184,27 +211,201 @@ const INTERNAL_ALERT_EMAILS = [
     if (!phone) return resultError("INVALID_PHONE", "Teléfono requerido");
     if (!message) return resultError("INVALID_MESSAGE", "Mensaje requerido");
 
-    const body = [
-      `Nombre: ${name}`,
-      `Email: ${email}`,
-      `Teléfono: ${phone}`,
-      `Servicio: ${service}`,
-      `Origen: ${source}`,
-      `Contacto preferido: ${contactChannel}`,
-      "",
-      "Mensaje:",
-      message
-    ].join("\n");
+    const internalHtml = buildInternalContactEmail_({
+      name: name,
+      email: email,
+      phone: phone,
+      service: service,
+      source: source,
+      contactChannel: contactChannel,
+      message: message
+    });
+    const confirmHtml = buildContactConfirmationEmail_({
+      name: name,
+      phone: phone,
+      service: service,
+      contactChannel: contactChannel,
+      message: message
+    });
 
     MailApp.sendEmail({
       to: INTERNAL_ALERT_EMAILS,
       subject: `Nuevo contacto web: ${name} | ${service}`,
-      body: body,
+      body: buildContactPlainText_(name, email, phone, service, source, contactChannel, message),
+      htmlBody: internalHtml,
       replyTo: email,
       name: "Formulario Web Mylder"
     });
 
+    MailApp.sendEmail({
+      to: email,
+      subject: "Recibimos tu mensaje | Mylder Solutions",
+      body: `Hola ${formatDisplayName_(name)},\n\nRecibimos tu mensaje. Te contactaremos pronto.\n\nServicio: ${service}\nTeléfono: ${phone}\n\nMylder Solutions`,
+      htmlBody: confirmHtml,
+      replyTo: BRAND_REPLY_TO,
+      name: BRAND_FROM_NAME
+    });
+
     return resultOk({ sent: true });
+  }
+
+  function formatDisplayName_(value) {
+    const clean = String(value || "").trim().replace(/\s+/g, " ");
+    if (!clean) return "";
+    return clean.replace(/\S+/g, function(word) {
+      if (!word) return word;
+      return word.charAt(0).toLocaleUpperCase("es-MX") + word.slice(1).toLocaleLowerCase("es-MX");
+    });
+  }
+
+  function buildContactPlainText_(name, email, phone, service, source, contactChannel, message) {
+    return [
+      "Nuevo contacto web",
+      "",
+      "Nombre: " + name,
+      "Email: " + email,
+      "Teléfono: " + phone,
+      "Servicio: " + service,
+      "Origen: " + source,
+      "Contacto preferido: " + contactChannel,
+      "",
+      "Mensaje:",
+      message
+    ].join("\n");
+  }
+
+  function escapeHtml_(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function formatDateLabel_(isoDate) {
+    const months = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+    const parts = String(isoDate || "").split("-");
+    if (parts.length !== 3) return isoDate;
+    const day = Number(parts[2]);
+    const month = months[Number(parts[1]) - 1] || parts[1];
+    return `${day} de ${month} de ${parts[0]}`;
+  }
+
+  function buildEmailShell_(kicker, titleHtml, bodyHtml, ctaHtml) {
+    return [
+      '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8" />',
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>',
+      '<body style="margin:0;padding:0;background-color:#f3f5fa;font-family:\'Segoe UI\',Helvetica,Arial,sans-serif;color:#f6f8ff;">',
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f3f5fa;">',
+      '<tr><td align="center" style="padding:32px 16px;">',
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background-color:#080d1a;border:1px solid rgba(243,196,0,0.28);border-radius:18px;overflow:hidden;">',
+      '<tr><td style="padding:28px 32px 22px;text-align:center;background:linear-gradient(180deg,#041e42 0%,#080d1a 100%);">',
+      `<img src="${BRAND_LOGO_URL}" alt="" width="36" height="36" style="display:block;margin:0 auto 10px;opacity:0.95;" />`,
+      '<p style="margin:0 auto 6px;font-size:21px;font-weight:800;letter-spacing:-0.03em;color:#ffffff;font-family:\'Segoe UI\',Helvetica,Arial,sans-serif;">MYLDER SOLUTIONS</p>',
+      `<p style="margin:0;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#f3c400;font-family:'Courier New',monospace;">${escapeHtml_(kicker)}</p>`,
+      "</td></tr>",
+      `<tr><td style="padding:28px 32px 10px;">${titleHtml}${bodyHtml}</td></tr>`,
+      ctaHtml || "",
+      '<tr><td style="padding:18px 32px 24px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;">',
+      '<p style="margin:0 0 6px;font-size:13px;color:#a8b4d2;">Mylder Solutions · Consultoría y desarrollo web</p>',
+      `<p style="margin:0;font-size:12px;color:#8fa0c8;"><a href="mailto:${BRAND_REPLY_TO}" style="color:#f3c400;text-decoration:none;">${BRAND_REPLY_TO}</a> · <a href="${BRAND_SITE_URL}" style="color:#f3c400;text-decoration:none;">mylder.mx</a></p>`,
+      "</td></tr></table></td></tr></table></body></html>"
+    ].join("");
+  }
+
+  function buildContactConfirmationEmail_(payload) {
+    const name = escapeHtml_(formatDisplayName_(payload.name));
+    const service = escapeHtml_(payload.service);
+    const phone = escapeHtml_(payload.phone);
+    const channel = escapeHtml_(payload.contactChannel);
+    const message = escapeHtml_(payload.message);
+
+    const titleHtml = `<h1 style="margin:0 0 12px;font-size:26px;line-height:1.15;font-weight:700;color:#f6f8ff;">Hola, ${name}</h1>`;
+    const bodyHtml = [
+      '<p style="margin:0 0 18px;font-size:16px;line-height:1.6;color:#c9d4f5;">Recibimos tu mensaje correctamente. Nuestro equipo lo revisará y te contactará pronto.</p>',
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:rgba(4,30,66,0.45);border:1px solid rgba(243,196,0,0.22);border-radius:14px;">',
+      '<tr><td style="padding:18px 20px;">',
+      '<p style="margin:0 0 8px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#f3c400;">Resumen de tu solicitud</p>',
+      `<p style="margin:0 0 6px;font-size:14px;color:#e2eafc;"><strong style="color:#ffe7a0;">Servicio:</strong> ${service}</p>`,
+      `<p style="margin:0 0 6px;font-size:14px;color:#e2eafc;"><strong style="color:#ffe7a0;">Teléfono:</strong> ${phone}</p>`,
+      `<p style="margin:0 0 12px;font-size:14px;color:#e2eafc;"><strong style="color:#ffe7a0;">Contacto preferido:</strong> ${channel}</p>`,
+      `<p style="margin:0;font-size:14px;line-height:1.55;color:#dbe4ff;white-space:pre-wrap;">${message}</p>`,
+      "</td></tr></table>"
+    ].join("");
+
+    const ctaHtml = [
+      '<tr><td style="padding:0 32px 28px;text-align:center;">',
+      '<a href="https://wa.me/524424241707?text=Hola%2C%20acabo%20de%20enviar%20el%20formulario%20web%20y%20quiero%20continuar%20por%20WhatsApp." style="display:inline-block;padding:12px 22px;background-color:#f3c400;color:#041e42;text-decoration:none;font-weight:700;font-size:14px;border-radius:999px;">Comunicar por WhatsApp</a>',
+      "</td></tr>"
+    ].join("");
+
+    return buildEmailShell_("Confirmación", titleHtml, bodyHtml, ctaHtml);
+  }
+
+  function buildBookingConfirmationEmail_(payload) {
+    const name = escapeHtml_(formatDisplayName_(payload.name));
+    const date = formatDateLabel_(payload.date);
+    const time = escapeHtml_(payload.time);
+    const service = escapeHtml_(payload.service);
+
+    const titleHtml = `<h1 style="margin:0 0 12px;font-size:26px;line-height:1.15;font-weight:700;color:#f6f8ff;">Hola, ${name}</h1>`;
+    const bodyHtml = [
+      '<p style="margin:0 0 18px;font-size:16px;line-height:1.6;color:#c9d4f5;">Tu reunión con Mylder Solutions quedó registrada. También recibirás la invitación en tu calendario.</p>',
+      '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:rgba(4,30,66,0.45);border:1px solid rgba(243,196,0,0.22);border-radius:14px;">',
+      '<tr><td style="padding:18px 20px;">',
+      '<p style="margin:0 0 8px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#f3c400;">Detalles</p>',
+      `<p style="margin:0 0 6px;font-size:15px;color:#e2eafc;"><strong style="color:#ffe7a0;">Fecha:</strong> ${escapeHtml_(date)}</p>`,
+      `<p style="margin:0 0 6px;font-size:15px;color:#e2eafc;"><strong style="color:#ffe7a0;">Hora:</strong> ${time}</p>`,
+      `<p style="margin:0 0 6px;font-size:15px;color:#e2eafc;"><strong style="color:#ffe7a0;">Servicio:</strong> ${service}</p>`,
+      '<p style="margin:0;font-size:14px;color:#a8b4d2;">Zona horaria: America/Mexico_City</p>',
+      "</td></tr></table>"
+    ].join("");
+
+    const ctaHtml = [
+      '<tr><td style="padding:0 32px 28px;text-align:center;">',
+      '<a href="https://wa.me/524424241707" style="display:inline-block;padding:12px 22px;background-color:#f3c400;color:#041e42;text-decoration:none;font-weight:700;font-size:14px;border-radius:999px;">Escribir por WhatsApp</a>',
+      "</td></tr>"
+    ].join("");
+
+    return buildEmailShell_("Cita apartada", titleHtml, bodyHtml, ctaHtml);
+  }
+
+  function buildInternalContactEmail_(payload) {
+    const rows = [
+      ["Nombre", payload.name],
+      ["Email", payload.email],
+      ["Teléfono", payload.phone],
+      ["Servicio", payload.service],
+      ["Origen", payload.source],
+      ["Canal", payload.contactChannel]
+    ].map(function (row) {
+      return `<p style="margin:0 0 8px;font-size:14px;color:#e2eafc;"><strong style="color:#ffe7a0;">${escapeHtml_(row[0])}:</strong> ${escapeHtml_(row[1])}</p>`;
+    }).join("");
+
+    const titleHtml = '<h1 style="margin:0 0 12px;font-size:22px;color:#f6f8ff;">Nuevo contacto web</h1>';
+    const bodyHtml = rows + `<p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#dbe4ff;white-space:pre-wrap;">${escapeHtml_(payload.message)}</p>`;
+    return buildEmailShell_("Alerta interna", titleHtml, bodyHtml, "");
+  }
+
+  function buildInternalBookingEmail_(payload) {
+    const rows = [
+      ["Nombre", payload.name],
+      ["Email", payload.email],
+      ["Teléfono", payload.phone || "No indicado"],
+      ["Servicio", payload.service],
+      ["Origen", payload.source],
+      ["Canal", payload.contactChannel],
+      ["Fecha", formatDateLabel_(payload.date)],
+      ["Hora", payload.time]
+    ].map(function (row) {
+      return `<p style="margin:0 0 8px;font-size:14px;color:#e2eafc;"><strong style="color:#ffe7a0;">${escapeHtml_(row[0])}:</strong> ${escapeHtml_(row[1])}</p>`;
+    }).join("");
+
+    const titleHtml = '<h1 style="margin:0 0 12px;font-size:22px;color:#f6f8ff;">Nueva reunión agendada</h1>';
+    return buildEmailShell_("Alerta interna", titleHtml, rows, "");
   }
 
   function getAvailability(date) {

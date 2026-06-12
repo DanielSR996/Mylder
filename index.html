@@ -65,9 +65,10 @@
       },
     };
   </script>
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./css/components.css" />
-  <link rel="stylesheet" href="./css/tailwind-bridge.css" />
+  <meta name="mylder-asset-version" content="20260612" />
+  <link rel="stylesheet" href="./styles.css?v=20260612" />
+  <link rel="stylesheet" href="./css/components.css?v=20260612" />
+  <link rel="stylesheet" href="./css/tailwind-bridge.css?v=20260612" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -129,7 +130,7 @@
     }
   </script>
 </head>
-<body class="bg-[#030303] font-body text-[#f6f8ff] antialiased opacity-0 transition-opacity duration-700">
+<body class="bg-[#030303] font-body text-[#f6f8ff] antialiased">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PR9NJLZC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -611,7 +612,7 @@
                 <option value="+598" data-iso="uy">UY +598 Uruguay</option>
                 <option value="+58" data-iso="ve">VE +58 Venezuela</option>
               </select>
-              <input id="contactPhone" name="phone" type="tel" placeholder="Ej. 55 1234 5678 (CDMX)" required />
+              <input id="contactPhone" name="phone" type="tel" placeholder="55 123 456 78" required />
             </div>
           </label>
           <label>
@@ -654,8 +655,8 @@
             <textarea id="contactMessage" name="message" rows="4" placeholder="Cuéntanos qué necesitas..." required></textarea>
           </label>
           <label class="consent-check form-full-span">
-            <input id="contactWhatsappConsent" name="whatsappConsent" type="checkbox" />
-            Acepto recibir confirmaciones y seguimiento por WhatsApp sobre mi solicitud.
+            <input id="contactWhatsappConsent" name="whatsappConsent" type="checkbox" required />
+            Acepto recibir confirmaciones y seguimiento por WhatsApp sobre mi solicitud. <span aria-hidden="true">*</span>
           </label>
           <div class="contact-actions">
             <button id="contactSubmit" class="btn btn-primary" type="submit">Enviar formulario</button>
@@ -964,7 +965,7 @@
                   <option value="+598" data-iso="uy">UY +598 Uruguay</option>
                   <option value="+58" data-iso="ve">VE +58 Venezuela</option>
                 </select>
-                <input id="leadPhone" type="tel" placeholder="Ej. 55 1234 5678 (CDMX)" />
+                <input id="leadPhone" type="tel" placeholder="55 123 456 78" />
               </div>
             </label>
             <label>
@@ -1003,8 +1004,8 @@
               </select>
             </label>
             <label class="consent-check form-full-span">
-              <input id="leadWhatsappConsent" type="checkbox" checked />
-              Acepto recibir confirmación y recordatorios de mi cita por WhatsApp.
+              <input id="leadWhatsappConsent" type="checkbox" required />
+              Acepto recibir confirmación y recordatorios de mi cita por WhatsApp. <span aria-hidden="true">*</span>
             </label>
           </div>
           <div class="booking-actions">
@@ -1054,8 +1055,8 @@
     </button>
   </div>
 
-  <script type="module" src="./main.js"></script>
-  <script src="./tab-attention.js" defer></script>
+  <script type="module" src="./main.js?v=20260612"></script>
+  <script src="./tab-attention.js?v=20260612" defer></script>
   <script>
     document.querySelectorAll(".js-current-year").forEach((node) => {
       node.textContent = String(new Date().getFullYear());
