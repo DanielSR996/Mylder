@@ -1,5 +1,20 @@
 # Configuración local con credenciales
 api/settings.php
+api/settings.local.php
+
+# Correos capturados en desarrollo
+storage/mail-outbox/*
+!storage/mail-outbox/.gitkeep
+
+# PDFs de cotizaciones (subir en servidor)
+crm/storage/cotizaciones/*
+!crm/storage/cotizaciones/.gitkeep
+
+# Debug / IDE / artefactos locales
+.cursor/
+**/debug-ab4a6a.log
+cookies.txt
+*.zip
 
 # Sistema
 .DS_Store

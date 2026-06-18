@@ -13,6 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
   exit;
 }
 
+function proxyIsProductionHost(): bool {
+  $host = strtolower((string) ($_SERVER["HTTP_HOST"] ?? ""));
+  return $host !== "" && str_contains($host, "mylder.mx");
+}
+
 $settingsCandidates = [
   __DIR__ . "/settings.php",
   dirname(__DIR__) . "/secure/settings.php",
@@ -29,6 +34,10 @@ $settingsLoaded = false;
 foreach ($settingsCandidates as $candidate) {
   if (is_file($candidate)) {
     require_once $candidate;
+    $localOverride = __DIR__ . "/settings.local.php";
+    if (is_file($localOverride) && !proxyIsProductionHost()) {
+      require_once $localOverride;
+    }
     $settingsLoaded = true;
     break;
   }
@@ -152,6 +161,25 @@ if ($action === ACTION_RESERVE) {
     $emailStatus = ["internal" => false, "confirmation" => false, "error" => $mailErr->getMessage()];
   }
 
+  $crmLead = ["ok" => false];
+  try {
+    require_once __DIR__ . "/crm-lead-ingest.php";
+    $crmLead = crmIngestWebLead([
+      "tipo" => "web_cita",
+      "name" => $payload["name"],
+      "email" => $payload["email"],
+      "phone" => $payload["phone"],
+      "service" => $payload["service"],
+      "message" => "Reservó cita desde el sitio web.",
+      "date" => $payload["date"],
+      "time" => $payload["time"],
+      "source" => $payload["source"],
+      "contactChannel" => $payload["contactChannel"],
+    ]);
+  } catch (Throwable) {
+    $crmLead = ["ok" => false, "error" => "crm_unavailable"];
+  }
+
   $n8n = notifyN8n("booking_reserved", [
     "lead" => [
       "name" => $payload["name"],
@@ -172,7 +200,8 @@ if ($action === ACTION_RESERVE) {
   ]);
 
   $responseBody = attachN8nStatus(array_merge($upstream["body"], [
-    "email" => $emailStatus
+    "email" => $emailStatus,
+    "crm" => $crmLead,
   ]), $n8n);
   respondUpstream($responseBody, 200);
 }
@@ -216,6 +245,23 @@ if ($action === ACTION_CONTACT) {
     );
   }
 
+  $crmLead = ["ok" => false];
+  try {
+    require_once __DIR__ . "/crm-lead-ingest.php";
+    $crmLead = crmIngestWebLead([
+      "tipo" => "web_contacto",
+      "name" => $payload["name"],
+      "email" => $payload["email"],
+      "phone" => $payload["phone"],
+      "service" => $payload["service"],
+      "message" => $payload["message"],
+      "source" => $payload["source"],
+      "contactChannel" => $payload["contactChannel"],
+    ]);
+  } catch (Throwable) {
+    $crmLead = ["ok" => false, "error" => "crm_unavailable"];
+  }
+
   $upstream = forwardToAppsScript($payload, "GET");
   $upstreamOk = isset($upstream["body"]["ok"]) ? (bool) $upstream["body"]["ok"] : ($upstream["http_code"] < 400);
   $n8n = notifyN8n("contact_submitted", [
@@ -238,6 +284,7 @@ if ($action === ACTION_CONTACT) {
     "ok" => true,
     "sent" => true,
     "email" => $emailStatus,
+    "crm" => $crmLead,
     "appsScript" => $upstream["body"] ?? null
   ], $n8n);
   respondUpstream($responseBody, 200);

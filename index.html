@@ -44,3 +44,1034 @@
   />
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#041e42",
+            accent: "#f3c400",
+            surface: "#080d1a",
+            muted: "#a8b4d2",
+          },
+          fontFamily: {
+            display: ["Syne", "system-ui", "sans-serif"],
+            heading: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+            body: ["DM Sans", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <meta name="mylder-asset-version" content="20260612" />
+  <link rel="stylesheet" href="./styles.css?v=20260612" />
+  <link rel="stylesheet" href="./css/components.css?v=20260612" />
+  <link rel="stylesheet" href="./css/tailwind-bridge.css?v=20260612" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://mylder.mx/#organization",
+          "name": "Mylder Solutions",
+          "url": "https://mylder.mx/",
+          "logo": "https://mylder.mx/assets/logo-completo.png",
+          "email": "contacto@mylder.mx",
+          "telephone": "+52-442-424-1707",
+          "description": "Consultoría tecnológica, desarrollo web, software a la medida y branding para empresas en México.",
+          "sameAs": [
+            "https://www.facebook.com/profile.php?id=61590209589956",
+            "https://www.instagram.com/myldersolutions/",
+            "https://www.tiktok.com/@myldersolutions"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://mylder.mx/#website",
+          "url": "https://mylder.mx/",
+          "name": "Mylder Solutions",
+          "inLanguage": "es-MX",
+          "publisher": { "@id": "https://mylder.mx/#organization" }
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://mylder.mx/#nav-servicios",
+          "name": "Servicios",
+          "url": "https://mylder.mx/#servicios"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://mylder.mx/#nav-blog",
+          "name": "Blog",
+          "url": "https://mylder.mx/#blog"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://mylder.mx/#nav-contacto",
+          "name": "Contacto",
+          "url": "https://mylder.mx/#contacto"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://mylder.mx/#nav-faq",
+          "name": "FAQ",
+          "url": "https://mylder.mx/#faq"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://mylder.mx/#nav-agenda",
+          "name": "Agenda",
+          "url": "https://mylder.mx/#agenda"
+        }
+      ]
+    }
+  </script>
+</head>
+<body class="bg-[#030303] font-body text-[#f6f8ff] antialiased">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PR9NJLZC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <header class="header" id="inicio">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio">
+      <img class="brand-mark" src="./assets/logo-isotipo.png" alt="Isotipo Mylder Solutions" />
+      <span>MYLDER SOLUTIONS</span>
+    </a>
+    <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav nav-tubelight" id="mainNav" aria-label="Navegación principal">
+      <div class="nav-tubelight__track">
+        <div class="nav-tubelight__lamp" id="navTubelightLamp" aria-hidden="true">
+          <div class="nav-tubelight__lamp-bg"></div>
+          <div class="nav-tubelight__lamp-tube">
+            <span class="nav-tubelight__glow nav-tubelight__glow--lg"></span>
+            <span class="nav-tubelight__glow nav-tubelight__glow--md"></span>
+            <span class="nav-tubelight__glow nav-tubelight__glow--sm"></span>
+          </div>
+        </div>
+        <a href="#servicios" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span class="nav-tubelight__text">Servicios</span>
+        </a>
+        <a href="#proceso" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 3v18"/><path d="m8 7 4-4 4 4"/><path d="m8 17 4 4 4-4"/></svg>
+          <span class="nav-tubelight__text">Proceso</span>
+        </a>
+        <a href="#clientes" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="nav-tubelight__text">Clientes</span>
+        </a>
+        <a href="#agenda" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span class="nav-tubelight__text">Agenda</span>
+        </a>
+        <a href="#contacto" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span class="nav-tubelight__text">Contacto</span>
+        </a>
+        <a href="#faq" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          <span class="nav-tubelight__text">FAQ</span>
+        </a>
+        <a href="#blog" class="nav-tubelight__link" data-nav-link>
+          <svg class="nav-tubelight__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          <span class="nav-tubelight__text">Blog</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-waves tilt-surface" aria-label="Inicio">
+      <canvas class="hero-waves__canvas" aria-hidden="true"></canvas>
+      <div class="hero-waves__blobs" aria-hidden="true">
+        <div class="hero-waves__blob hero-waves__blob--top"></div>
+        <div class="hero-waves__blob hero-waves__blob--right"></div>
+        <div class="hero-waves__blob hero-waves__blob--left"></div>
+      </div>
+      <div class="hero-waves__content">
+        <div class="hero-waves__badge" data-hero-item>
+          <svg class="hero-waves__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            <path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/>
+          </svg>
+          <span>Experiencia digitalizando negocios</span>
+        </div>
+        <h1 class="hero-waves__title" data-hero-item>
+          Tu negocio online,
+          <span class="hero-waves__title-accent">hecho a código</span>
+        </h1>
+        <p id="typewriterLine" class="hero-waves__typewriter typewriter" data-hero-item>Varios desarrolladores, un solo equipo.</p>
+        <div class="hero-waves__actions hero-actions" data-hero-item>
+          <a class="btn btn-primary btn-quote-pulse hero-waves__btn" target="_blank" rel="noopener noreferrer" href="https://wa.me/524424241707?text=Hola%2C%20quiero%20una%20cotizaci%C3%B3n%20de%20consultor%C3%ADa%20tecnol%C3%B3gica%20y%20desarrollo%20a%20la%20medida.">
+            Solicitar cotización
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn-ghost hero-waves__btn hero-waves__btn--outline" href="#agenda">Agendar reunión</a>
+        </div>
+        <div class="hero-pills-marquee" data-hero-pills-marquee data-hero-item aria-label="Servicios destacados">
+          <div class="hero-pills-marquee__fade hero-pills-marquee__fade--left" aria-hidden="true"></div>
+          <div class="hero-pills-marquee__viewport">
+            <div class="hero-pills-marquee__track" data-hero-pills-track>
+              <span class="hero-pills-marquee__pill">SEO y estructura web</span>
+              <span class="hero-pills-marquee__pill">Seguimiento de leads</span>
+              <span class="hero-pills-marquee__pill">IA y automatización</span>
+              <span class="hero-pills-marquee__pill">Branding</span>
+              <span class="hero-pills-marquee__pill">Digitaliza tu negocio</span>
+            </div>
+          </div>
+          <div class="hero-pills-marquee__fade hero-pills-marquee__fade--right" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section section" id="por-que-mylder" aria-label="Por qué Mylder">
+      <header class="features-section__head section-head reveal">
+        <p class="kicker">Diferenciador</p>
+        <h2>Por qué Mylder</h2>
+      </header>
+      <div class="features-section__grid">
+        <article class="features-card reveal" data-features-card>
+          <div class="features-card__viz">
+            <div class="features-digitize" data-digitize aria-hidden="true">
+              <div class="features-digitize__panel">
+                <div class="features-digitize__paper">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="features-digitize__grid" aria-hidden="true"></div>
+                <div class="features-digitize__cells" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                  <span></span>
+                </div>
+                <div class="features-digitize__scan" data-digitize-scan></div>
+              </div>
+            </div>
+          </div>
+          <div class="features-card__copy">
+            <h3>Experiencia digitalizando negocios.</h3>
+          </div>
+        </article>
+        <article class="features-card reveal" data-features-card>
+          <div class="features-card__viz">
+            <div class="features-biz-first" data-biz-first aria-hidden="true">
+              <div class="features-biz-first__connector">
+                <span class="features-biz-first__connector-fill" data-biz-connector-fill></span>
+              </div>
+              <ol class="features-biz-first__steps">
+                <li class="features-biz-first__step is-active" data-biz-step="0">
+                  <span class="features-biz-first__marker" aria-hidden="true"></span>
+                  <span class="features-biz-first__label">Tu negocio</span>
+                </li>
+                <li class="features-biz-first__step" data-biz-step="1">
+                  <span class="features-biz-first__marker" aria-hidden="true"></span>
+                  <span class="features-biz-first__label">Entendemos</span>
+                </li>
+                <li class="features-biz-first__step" data-biz-step="2">
+                  <span class="features-biz-first__marker" aria-hidden="true"></span>
+                  <span class="features-biz-first__label">Código a medida</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div class="features-card__copy">
+            <h3>Primero tu negocio. Después el código.</h3>
+            <p>No codeamos el primer día sin entender cómo operas.</p>
+          </div>
+        </article>
+        <article class="features-card reveal" data-features-card>
+          <div class="features-card__viz">
+            <div class="features-hub" data-integral-hub aria-hidden="true">
+              <div class="features-hub__ring"></div>
+              <div class="features-hub__center">1 equipo</div>
+              <span class="features-hub__node is-active" data-hub-node="0">Marca</span>
+              <span class="features-hub__node" data-hub-node="1">Software</span>
+              <span class="features-hub__node" data-hub-node="2">Soporte</span>
+            </div>
+          </div>
+          <div class="features-card__copy">
+            <h3>Marca, software y soporte</h3>
+            <p>Un solo equipo en Querétaro.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="modern-services section" id="servicios" data-modern-services>
+      <div class="modern-services__spotlight" aria-hidden="true"></div>
+      <div class="modern-services__container">
+        <header class="modern-services__head reveal">
+          <p class="kicker">SERVICIOS</p>
+          <h2>Lo que construimos contigo</h2>
+          <p class="modern-services__desc">Desde la web hasta la automatización.</p>
+        </header>
+        <div class="modern-services__grid reveal">
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Web a código, lista para vender</h3>
+              <p>Dominio, hosting y SEO básico incluidos.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Software donde Excel ya no alcanza</h3>
+              <p>Sistemas hechos para cómo trabajas tú.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>App cuando el celular es tu canal</h3>
+              <p>iOS y Android, hecha para tu operación.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Antes de invertir, saber qué conviene</h3>
+              <p>Web, app o automatización: te orientamos.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Marca cuando aún no tienes logo</h3>
+              <p>Logo y piezas listas para web y redes.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v2M5.64 5.64l1.41 1.41M3 12h2M5.64 18.36l1.41-1.41M12 19v2M18.36 18.36l-1.41-1.41M21 12h-2M18.36 5.64l-1.41 1.41"/><circle cx="12" cy="12" r="4"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Menos tareas repetidas, menos errores</h3>
+              <p>Citas y mensajes con n8n, sin intervención manual.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Saber de dónde vienen tus contactos</h3>
+              <p>SEO y Analytics incluidos en cada sitio.</p>
+            </div>
+          </article>
+          <article class="modern-feature-card" data-modern-feature-card>
+            <div class="modern-feature-card__icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <div class="modern-feature-card__copy">
+              <h3>Paquetes completos</h3>
+              <p>Marketing, web y software según tu etapa.</p>
+            </div>
+          </article>
+        </div>
+        <div class="cta-inline reveal">
+          <a class="btn btn-primary" target="_blank" rel="noopener noreferrer" href="https://wa.me/524424241707?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20digitales.">
+            Pedir información por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="process-timeline-section w-full max-w-none py-12 md:py-20" id="proceso" aria-label="Proceso">
+      <div class="process-timeline-section__inner mx-auto w-full max-w-4xl px-4">
+        <header class="section-head process-timeline-section__head reveal mb-10 text-center md:mb-12">
+          <p class="kicker">Proceso</p>
+          <h2 class="font-display text-[clamp(1.75rem,4.5vw,3rem)] font-bold leading-[1.06] tracking-tight text-balance">Cuatro etapas, de la primera llamada al soporte</h2>
+          <p class="process-timeline-section__desc">Diagnóstico, alcance, ejecución y continuidad</p>
+        </header>
+        <div class="process-timeline" data-process-timeline>
+          <div class="process-timeline__line process-timeline__line--h" aria-hidden="true"></div>
+          <div class="process-timeline__line process-timeline__line--v" aria-hidden="true"></div>
+          <article class="process-timeline__step opacity-0">
+            <div class="process-timeline__checkpoint" aria-hidden="true">
+              <span class="font-mono text-sm font-semibold tracking-wide text-accent">I</span>
+            </div>
+            <h3 class="font-heading text-sm font-bold tracking-tight text-white md:text-base">Diagnóstico de negocio</h3>
+            <p class="process-timeline__copy">Qué duele hoy y qué puede esperar.</p>
+          </article>
+          <article class="process-timeline__step opacity-0">
+            <div class="process-timeline__checkpoint" aria-hidden="true">
+              <span class="font-mono text-sm font-semibold tracking-wide text-accent">II</span>
+            </div>
+            <h3 class="font-heading text-sm font-bold tracking-tight text-white md:text-base">Arquitectura de solución</h3>
+            <p class="process-timeline__copy">Qué se construye, en cuánto tiempo y con qué.</p>
+          </article>
+          <article class="process-timeline__step opacity-0">
+            <div class="process-timeline__checkpoint" aria-hidden="true">
+              <span class="font-mono text-sm font-semibold tracking-wide text-accent">III</span>
+            </div>
+            <h3 class="font-heading text-sm font-bold tracking-tight text-white md:text-base">Ejecución 1:1</h3>
+            <p class="process-timeline__copy">Avances visibles. Hablas directo con quien construye.</p>
+          </article>
+          <article class="process-timeline__step opacity-0">
+            <div class="process-timeline__checkpoint" aria-hidden="true">
+              <span class="font-mono text-sm font-semibold tracking-wide text-accent">IV</span>
+            </div>
+            <h3 class="font-heading text-sm font-bold tracking-tight text-white md:text-base">Soporte y evolución</h3>
+            <p class="process-timeline__copy">El sitio no muere el día del launch.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="diff-bento-section w-full max-w-none py-12 md:py-20" id="diferencia" aria-label="Nuestra diferencia">
+      <div class="diff-bento-section__inner mx-auto w-full max-w-7xl px-4">
+        <header class="section-head diff-bento-section__head reveal mb-8 md:mb-12">
+          <p class="kicker">Nuestra diferencia</p>
+          <h2 class="font-display text-[clamp(1.75rem,4.5vw,3rem)] font-bold leading-[1.06] tracking-tight text-balance">Un sitio bonito no paga la renta</h2>
+        </header>
+        <div
+          class="diff-bento-grid grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2 md:gap-6"
+          data-diff-bento
+        >
+          <article class="diff-bento-card diff-bento-card--featured group relative flex min-h-[16rem] flex-col items-center justify-center overflow-hidden rounded-2xl border border-accent/45 bg-black/40 p-8 text-center opacity-0 shadow-[0_0_0_1px_rgba(243,196,0,0.12),0_20px_48px_rgba(0,0,0,0.4)] transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/60 md:row-span-2 md:min-h-0">
+            <div class="bento-card__dots pointer-events-none absolute inset-0 opacity-60"></div>
+            <div class="relative flex flex-col items-center gap-5">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent transition-colors duration-300 group-hover:bg-accent/15">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 19h18v2H3v-2zm2-2h2V9H5v8zm4 0h2V5H9v12zm4 0h2v-6h-2v6zm4 0h2v-3h-2v3zM16 5l2.3 2.3-4.1 4.1-2.6-2.6L7 13.4l-1.4-1.4 6-6 2.6 2.6 2.7-2.7L16 5z"/></svg>
+              </div>
+              <div class="space-y-2">
+                <h3 class="font-heading text-xl font-bold tracking-tight text-white md:text-2xl">Cada página responde a una pregunta</h3>
+                <p class="mx-auto max-w-[22ch] text-sm leading-relaxed text-muted md:text-base">Sabemos para qué sirve cada sección de tu sitio.</p>
+              </div>
+            </div>
+          </article>
+          <article class="diff-bento-card group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 opacity-0 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)]">
+            <div class="bento-card__dots pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/10 text-accent transition-colors duration-300 group-hover:bg-primary/80">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12zm0 2c-3.3 0-6 1.8-6 4v1h12v-1c0-2.2-2.7-4-6-4zM5 12a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 5 12zm14 0a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 19 12zM3 19v-1c0-1.4.9-2.6 2.3-3.4A7.7 7.7 0 0 0 3 19zm18 0a7.7 7.7 0 0 0-2.3-4.4c1.4.8 2.3 2 2.3 3.4v1z"/></svg>
+            </div>
+            <div class="relative min-w-0 space-y-1.5">
+              <h3 class="font-heading text-base font-bold tracking-tight text-white md:text-lg">Varios devs, no un freelancer solo</h3>
+              <p class="text-sm leading-relaxed text-muted">Desarrollo, marca y estrategia en un mismo equipo.</p>
+            </div>
+          </article>
+          <article class="diff-bento-card group relative flex items-center gap-5 overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 opacity-0 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)]">
+            <div class="bento-card__dots pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div class="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/10 text-accent transition-colors duration-300 group-hover:bg-primary/80">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 4h2v6h-2V4zm0 10h2v2h-2v-2zm1-14A10 10 0 0 0 4 16h3a7 7 0 0 1 10 0h3A10 10 0 0 0 12 0zm0 24a8 8 0 0 0 8-8h-3a5 5 0 0 1-10 0H4a8 8 0 0 0 8 8z"/></svg>
+            </div>
+            <div class="relative min-w-0 space-y-1.5">
+              <h3 class="font-heading text-base font-bold tracking-tight text-white md:text-lg">Seguimos después del lanzamiento</h3>
+              <p class="text-sm leading-relaxed text-muted">Cambios y ajustes sin tickets eternos.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="photo-gallery-section section" id="showcase" aria-label="Showcase de proyectos">
+      <div class="photo-gallery__grid-bg" aria-hidden="true"></div>
+      <p class="photo-gallery__eyebrow reveal">Showcase</p>
+      <h2 class="photo-gallery__title reveal">Proyectos que <em>convierten</em></h2>
+      <p class="photo-gallery__subtitle reveal">Dirección visual estratégica para webs, apps y branding de clientes reales.</p>
+      <div class="photo-gallery reveal" data-photo-gallery data-animation-delay="0.5" aria-label="Galería de proyectos">
+        <div class="photo-gallery__stage"></div>
+      </div>
+      <div class="photo-gallery__cta reveal">
+        <a class="btn btn-primary" href="#contacto">Hablemos de tu proyecto</a>
+      </div>
+    </section>
+
+    <section class="clients-sparkles section" id="clientes" aria-label="Clientes">
+      <div class="clients-sparkles__intro">
+        <h2 class="clients-sparkles__headline" data-clients-item>
+          <span class="clients-sparkles__headline-line clients-sparkles__headline-accent">Confían en nosotros.</span>
+          <span class="clients-sparkles__headline-line">Empresas que ya crecen con Mylder.</span>
+        </h2>
+        <div class="clients-sparkles__slider-wrap" data-clients-item>
+          <div class="clients-sparkles__slider" data-infinite-slider aria-label="Logos de clientes">
+            <div class="clients-sparkles__slider-track" data-slider-track>
+              <div class="clients-sparkles__logo-item">
+                <img src="./assets/cliente-renathya.png" alt="Renathya" loading="lazy" />
+              </div>
+              <div class="clients-sparkles__logo-item">
+                <img src="./assets/cliente-lck-consultores.png" alt="LCK Consultores" loading="lazy" />
+              </div>
+              <div class="clients-sparkles__logo-item">
+                <img src="./assets/cliente-pasoa-pixel-agency.png" alt="Pasoa Pixel Agency" loading="lazy" />
+              </div>
+            </div>
+          </div>
+          <div class="clients-sparkles__blur clients-sparkles__blur--left" data-progressive-blur="left" aria-hidden="true"></div>
+          <div class="clients-sparkles__blur clients-sparkles__blur--right" data-progressive-blur="right" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="clients-sparkles__fx" aria-hidden="true">
+        <div class="clients-sparkles__glow"></div>
+        <div class="clients-sparkles__arc"></div>
+        <div class="clients-sparkles__particles-wrap">
+          <canvas class="clients-sparkles__canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="booking-section section" id="agenda" aria-label="Agenda una reunión">
+      <div class="booking-section__inner">
+        <header class="section-head booking-section__head reveal">
+          <p class="kicker">Agenda una reunión</p>
+          <h2>Reserva en minutos con disponibilidad real</h2>
+        </header>
+        <div class="booking-cta-shell reveal">
+          <article class="booking-card booking-start">
+            <div class="booking-card__dots" aria-hidden="true"></div>
+            <div class="booking-start__content">
+              <p class="kicker">Aparta tu reunión ahora</p>
+              <h3>Tu espacio de agenda ejecutiva</h3>
+              <p class="booking-start__desc">Agenda en 3 pasos y recibe seguimiento inmediato.</p>
+              <div class="booking-cta-badges">
+                <span>Atención prioritaria</span>
+                <span>Seguimiento por WhatsApp</span>
+              </div>
+              <p id="selectedSummary" class="booking-summary">Sin fecha seleccionada.</p>
+              <button id="openBookingModal" class="btn btn-primary booking-start__btn" type="button">
+                Iniciar reservación
+              </button>
+              <div id="bookingStatus" class="booking-status">Modo agenda: local (configura Google Apps Script para disponibilidad real).</div>
+              <a id="googleFallbackLink" class="booking-fallback-link" target="_blank" rel="noopener noreferrer" href="#">
+                Si prefieres, abrir agenda de Google directa
+              </a>
+            </div>
+          </article>
+          <aside class="booking-card booking-visual-panel" aria-hidden="true">
+            <div class="booking-card__dots" aria-hidden="true"></div>
+            <div class="booking-visual-panel__inner">
+              <lottie-player
+                src="https://assets3.lottiefiles.com/packages/lf20_x62chJ.json"
+                background="transparent"
+                speed="1"
+                loop
+                autoplay
+              ></lottie-player>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section section" id="contacto" aria-label="Contacto">
+      <div class="contact-section__inner">
+      <div id="contactCard" class="contact-card reveal">
+        <header class="contact-card__head">
+          <p class="kicker">Contacto</p>
+          <h2>Cuéntanos tu proyecto y te respondemos muy pronto</h2>
+          <p class="contact-card__desc">Compártenos tus datos. Te respondemos con propuesta clara y alcance definido.</p>
+        </header>
+        <form id="contactForm" class="contact-form">
+          <label>
+            Nombre
+            <input id="contactName" name="name" type="text" placeholder="Tu nombre" required />
+          </label>
+          <label>
+            Email
+            <input id="contactEmail" name="email" type="email" placeholder="tu@email.com" required />
+          </label>
+          <label>
+            Teléfono
+            <div class="phone-field">
+              <select id="contactPhoneCode" name="phoneCode" required>
+                <option value="+52" data-iso="mx" selected>MX +52 México</option>
+                <option value="+54" data-iso="ar">AR +54 Argentina</option>
+                <option value="+591" data-iso="bo">BO +591 Bolivia</option>
+                <option value="+55" data-iso="br">BR +55 Brasil</option>
+                <option value="+56" data-iso="cl">CL +56 Chile</option>
+                <option value="+57" data-iso="co">CO +57 Colombia</option>
+                <option value="+506" data-iso="cr">CR +506 Costa Rica</option>
+                <option value="+53" data-iso="cu">CU +53 Cuba</option>
+                <option value="+593" data-iso="ec">EC +593 Ecuador</option>
+                <option value="+503" data-iso="sv">SV +503 El Salvador</option>
+                <option value="+502" data-iso="gt">GT +502 Guatemala</option>
+                <option value="+509" data-iso="ht">HT +509 Haití</option>
+                <option value="+504" data-iso="hn">HN +504 Honduras</option>
+                <option value="+505" data-iso="ni">NI +505 Nicaragua</option>
+                <option value="+507" data-iso="pa">PA +507 Panamá</option>
+                <option value="+595" data-iso="py">PY +595 Paraguay</option>
+                <option value="+51" data-iso="pe">PE +51 Perú</option>
+                <option value="+1" data-iso="do">DO +1 República Dominicana</option>
+                <option value="+598" data-iso="uy">UY +598 Uruguay</option>
+                <option value="+58" data-iso="ve">VE +58 Venezuela</option>
+              </select>
+              <input id="contactPhone" name="phone" type="tel" placeholder="55 123 456 78" required />
+            </div>
+          </label>
+          <label>
+            Servicio de interés
+            <select id="contactService" name="service" required>
+              <option value="Landing Page">Landing Page</option>
+              <option value="Sitio Corporativo">Sitio Corporativo</option>
+              <option value="Desarrollo de software">Desarrollo de software</option>
+              <option value="Apps moviles">Apps moviles</option>
+              <option value="Automatiza tu negocio">Automatiza tu negocio</option>
+              <option value="Marketing digital">Marketing digital</option>
+              <option value="Branding">Branding</option>
+              <option value="SEO + Analytics">SEO + Analytics</option>
+              <option value="Consultoria estrategica">Consultoria estrategica</option>
+              <option value="Paquete completo">Paquete completo</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
+          <label>
+            ¿Cómo supiste de nosotros?
+            <select id="contactSource" name="source" required>
+              <option value="Recomendacion">Recomendacion</option>
+              <option value="Tiktok">Tiktok</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Youtube">Youtube</option>
+              <option value="Google">Google</option>
+            </select>
+          </label>
+          <label>
+            ¿Por dónde quieres que te contactemos?
+            <select id="contactChannel" name="contactChannel" required>
+              <option value="Google Meet">Google Meet</option>
+              <option value="Llamada">Llamada</option>
+              <option value="WhatsApp">WhatsApp</option>
+            </select>
+          </label>
+          <label class="form-full-span">
+            Mensaje
+            <textarea id="contactMessage" name="message" rows="4" placeholder="Cuéntanos qué necesitas..." required></textarea>
+          </label>
+          <label class="consent-check form-full-span">
+            <input id="contactWhatsappConsent" name="whatsappConsent" type="checkbox" required />
+            Acepto recibir confirmaciones y seguimiento por WhatsApp sobre mi solicitud. <span aria-hidden="true">*</span>
+          </label>
+          <div class="contact-actions">
+            <button id="contactSubmit" class="btn btn-primary" type="submit">Enviar formulario</button>
+            <a class="btn btn-ghost" target="_blank" rel="noopener noreferrer" href="https://wa.me/524424241707?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20mi%20proyecto%20web.">Prefiero WhatsApp</a>
+          </div>
+        </form>
+      </div>
+      <div id="thankYouCard" class="contact-card contact-card--thanks reveal thank-you-card" hidden>
+        <p class="kicker">Gracias</p>
+        <h2>Pronto nos pondremos en contacto contigo.</h2>
+        <div class="contact-actions contact-actions--center">
+          <a class="btn btn-primary" href="#inicio">Volver al inicio</a>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="faq-section section" id="faq" aria-label="Preguntas frecuentes">
+      <div class="faq-section__inner">
+        <header class="section-head faq-section__head reveal">
+          <p class="kicker">Preguntas frecuentes</p>
+          <h2>Resolvemos las dudas más comunes antes de empezar</h2>
+        </header>
+        <div class="faq-list">
+        <details class="faq-item reveal">
+          <summary>¿Cuánto cuesta un proyecto?</summary>
+          <p>Depende del alcance: un CRM pesa distinto que una landing. Te damos propuesta clara con entregables y etapas. Sitios web desde $9,500 MXN con dominio, hosting y SEO incluidos.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿La cotización tiene costo?</summary>
+          <p>No. La cotización es totalmente gratuita y sin compromiso. Primero entendemos tu proyecto, luego te proponemos la mejor ruta técnica y comercial para que decidas con información real.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿Qué incluye exactamente su servicio?</summary>
+          <p>Podemos cubrir todo el proceso: estrategia, branding, desarrollo web, CRM para leads/prospectos, automatizaciones con IA, SEO, Google Analytics, integración de campañas y soporte técnico continuo. Tú decides si arrancamos por fase o con paquete completo.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿Pueden crear mi marca desde cero y dejarla lista para vender?</summary>
+          <p>Sí. Construimos branding alineado a tu mercado: identidad visual, línea gráfica, tono de comunicación y estructura de contenido para que tu marca se vea profesional y esté lista para captar clientes.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿En cuánto tiempo pueden entregar?</summary>
+          <p>Depende del alcance. Proyectos pequeños pueden salir en pocas semanas; proyectos más completos se trabajan por fases. Siempre definimos un calendario con hitos y entregas parciales para que veas avance real desde el inicio.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿Qué pasa cuando termina el desarrollo?</summary>
+          <p>No desaparecemos al entregar. Podemos continuar con soporte técnico, mejoras, nuevas funcionalidades, optimización de conversiones y mantenimiento para que tu sistema siga creciendo junto con tu empresa.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿La página o sistema será mío?</summary>
+          <p>Sí. Tu marca, contenido y proyecto son tuyos. Trabajamos con procesos transparentes para que tengas control y continuidad de tu solución tecnológica.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>¿Cómo empezamos?</summary>
+          <p>Muy simple: agenda una reunión o escríbenos por WhatsApp. En esa primera llamada entendemos tu objetivo, definimos prioridades y te enviamos una propuesta clara para iniciar.</p>
+        </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section blog blog-section" id="blog">
+      <div class="section-head blog-section__head reveal">
+        <p class="kicker">BLOG</p>
+        <h2>Experiencia real en proyectos digitales</h2>
+      </div>
+      <div class="blog-carousel-wrap reveal" data-blog-carousel aria-label="Carrusel de blogs">
+        <button class="blog-carousel-arrow is-prev" type="button" aria-label="Blog anterior">←</button>
+        <div class="blog-carousel">
+          <div class="blog-track">
+            <a class="glass-blog-card" href="./blog-importancia-consultores-empresa.html" aria-label="Artículo sobre consultores expertos">
+              <article class="glass-blog-card__inner">
+                <div class="glass-blog-card__media">
+                  <img src="./assets/blog-cover-3.png" alt="Portada sobre consultoría y eficiencia empresarial" loading="lazy" />
+                  <div class="glass-blog-card__media-gradient" aria-hidden="true"></div>
+                  <div class="glass-blog-card__tags">
+                    <span class="glass-blog-card__badge">Consultoría</span>
+                    <span class="glass-blog-card__badge">Eficiencia</span>
+                  </div>
+                  <div class="glass-blog-card__overlay" aria-hidden="true">
+                    <span class="glass-blog-card__cta">
+                      <svg class="glass-blog-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                      Leer artículo
+                    </span>
+                  </div>
+                </div>
+                <div class="glass-blog-card__body">
+                  <div class="glass-blog-card__copy">
+                    <h3>Por qué contratar consultores mejora costos y eficiencia</h3>
+                    <p>Cómo evitar nóminas sobredimensionadas y ganar velocidad con un equipo consultor especializado.</p>
+                  </div>
+                  <div class="glass-blog-card__footer">
+                    <div class="glass-blog-card__author">
+                      <img class="glass-blog-card__avatar" src="./assets/logo-isotipo.png" alt="" width="32" height="32" loading="lazy" />
+                      <div class="glass-blog-card__author-meta">
+                        <span class="glass-blog-card__author-name">Mylder Solutions</span>
+                        <span class="glass-blog-card__date">11 de mayo de 2026</span>
+                      </div>
+                    </div>
+                    <div class="glass-blog-card__read-time">
+                      <svg class="glass-blog-card__icon glass-blog-card__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      <span>6 min</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </a>
+            <a class="glass-blog-card" href="./blog-importancia-digitalizar-empresa.html" aria-label="Artículo sobre digitalizar empresa">
+              <article class="glass-blog-card__inner">
+                <div class="glass-blog-card__media">
+                  <img src="./assets/blog-cover-1.png" alt="Portada sobre digitalización de empresas" loading="lazy" />
+                  <div class="glass-blog-card__media-gradient" aria-hidden="true"></div>
+                  <div class="glass-blog-card__tags">
+                    <span class="glass-blog-card__badge">Digitalización</span>
+                    <span class="glass-blog-card__badge">Negocios</span>
+                  </div>
+                  <div class="glass-blog-card__overlay" aria-hidden="true">
+                    <span class="glass-blog-card__cta">
+                      <svg class="glass-blog-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                      Leer artículo
+                    </span>
+                  </div>
+                </div>
+                <div class="glass-blog-card__body">
+                  <div class="glass-blog-card__copy">
+                    <h3>La importancia de digitalizar tu empresa hoy</h3>
+                    <p>Por qué desde pandemia cambió el mercado y qué ventajas reales obtiene una empresa al digitalizarse.</p>
+                  </div>
+                  <div class="glass-blog-card__footer">
+                    <div class="glass-blog-card__author">
+                      <img class="glass-blog-card__avatar" src="./assets/logo-isotipo.png" alt="" width="32" height="32" loading="lazy" />
+                      <div class="glass-blog-card__author-meta">
+                        <span class="glass-blog-card__author-name">Mylder Solutions</span>
+                        <span class="glass-blog-card__date">22 de marzo de 2026</span>
+                      </div>
+                    </div>
+                    <div class="glass-blog-card__read-time">
+                      <svg class="glass-blog-card__icon glass-blog-card__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      <span>5 min</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </a>
+            <a class="glass-blog-card" href="./blog-experiencia-inmuebles-digital.html" aria-label="Artículo sobre venta digital de inmuebles">
+              <article class="glass-blog-card__inner">
+                <div class="glass-blog-card__media">
+                  <img src="./assets/blog-cover-2.png" alt="Portada sobre venta digital de inmuebles" loading="lazy" />
+                  <div class="glass-blog-card__media-gradient" aria-hidden="true"></div>
+                  <div class="glass-blog-card__tags">
+                    <span class="glass-blog-card__badge">Inmobiliaria</span>
+                    <span class="glass-blog-card__badge">Marketing</span>
+                  </div>
+                  <div class="glass-blog-card__overlay" aria-hidden="true">
+                    <span class="glass-blog-card__cta">
+                      <svg class="glass-blog-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                      Leer artículo
+                    </span>
+                  </div>
+                </div>
+                <div class="glass-blog-card__body">
+                  <div class="glass-blog-card__copy">
+                    <h3>Cómo vendimos inmuebles por vía digital sin fricción</h3>
+                    <p>Retos reales, estrategia de comunicación inmediata y qué tan eficiente fue para cerrar más rápido.</p>
+                  </div>
+                  <div class="glass-blog-card__footer">
+                    <div class="glass-blog-card__author">
+                      <img class="glass-blog-card__avatar" src="./assets/logo-isotipo.png" alt="" width="32" height="32" loading="lazy" />
+                      <div class="glass-blog-card__author-meta">
+                        <span class="glass-blog-card__author-name">Mylder Solutions</span>
+                        <span class="glass-blog-card__date">14 de febrero de 2026</span>
+                      </div>
+                    </div>
+                    <div class="glass-blog-card__read-time">
+                      <svg class="glass-blog-card__icon glass-blog-card__icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      <span>7 min</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </a>
+          </div>
+        </div>
+        <button class="blog-carousel-arrow is-next" type="button" aria-label="Blog siguiente">→</button>
+        <div class="blog-carousel-dots" aria-label="Paginación de blogs"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-shell">
+      <div class="footer-brand">
+        <img class="footer-logo footer-logo-white" src="./assets/logo-completo.png" alt="Mylder Solutions logo completo" />
+        <p>Desarrollo web y software a medida desde Querétaro.</p>
+      </div>
+      <div class="footer-actions">
+        <a class="footer-contact-chip" href="mailto:contacto@mylder.mx">contacto@mylder.mx</a>
+        <a class="footer-contact-chip" target="_blank" rel="noopener noreferrer" href="https://wa.me/524424241707">+52 442 424 1707</a>
+        <div class="footer-social-links">
+          <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/profile.php?id=61590209589956" aria-label="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.5 1.6-1.5h1.7V4.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.4V11H8v3h2.1v8h3.4z"/></svg>
+          </a>
+          <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/myldersolutions/" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4A5.8 5.8 0 0 1 16.2 22H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zm8.3 1.9H7.9a4 4 0 0 0-4 4v8.2a4 4 0 0 0 4 4h8.2a4 4 0 0 0 4-4V7.9a4 4 0 0 0-4-4zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.9a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2zm5.2-3.4a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>
+          </a>
+          <a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@myldersolutions" aria-label="TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 3c.4 1.8 1.5 3 3.3 3.5v2.8a6.2 6.2 0 0 1-3.3-1V14a6 6 0 1 1-6-6h.4v3a3 3 0 1 0 2.6 3V3h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <nav class="footer-sitemap" aria-label="Mapa del sitio">
+      <a href="https://mylder.mx/#servicios">Servicios</a>
+      <a href="https://mylder.mx/#proceso">Proceso</a>
+      <a href="https://mylder.mx/#blog">Blog</a>
+      <a href="https://mylder.mx/#agenda">Agenda</a>
+      <a href="https://mylder.mx/#contacto">Contacto</a>
+      <a href="https://mylder.mx/#faq">FAQ</a>
+    </nav>
+    <div class="footer-bottom">
+      <div class="footer-legal-links">
+        <a href="./terminos-condiciones.html">Términos y Condiciones</a>
+        <a href="./aviso-privacidad.html">Aviso de Privacidad</a>
+      </div>
+      <p>Mylder Solutions | <span class="js-current-year">2026</span> • Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <div id="bookingModal" class="booking-modal" aria-hidden="true">
+    <div class="booking-modal-backdrop" data-close-modal="true"></div>
+    <div class="booking-modal-card" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+      <button id="closeBookingModal" class="booking-modal-close" type="button" aria-label="Cerrar">
+        ✕
+      </button>
+        <h3 id="bookingModalTitle">Reservar reunión</h3>
+        <p id="selectedSummaryModal">Sin fecha seleccionada.</p>
+        <div class="wizard-progress" aria-hidden="true">
+          <div class="wizard-item">
+            <span class="wizard-step active" data-step="1">1</span>
+            <small>Fecha</small>
+          </div>
+          <span class="wizard-line"></span>
+          <div class="wizard-item">
+            <span class="wizard-step" data-step="2">2</span>
+            <small>Horario</small>
+          </div>
+          <span class="wizard-line"></span>
+          <div class="wizard-item">
+            <span class="wizard-step" data-step="3">3</span>
+            <small>Datos</small>
+          </div>
+        </div>
+        <p id="wizardStepLabel" class="wizard-step-label">Paso 1 de 3 - Selecciona fecha</p>
+
+        <div id="bookingStepDate" class="booking-step-pane active">
+          <p class="modal-step-title">Paso 1 de 3 • Selecciona fecha</p>
+          <div id="daysGrid" class="days-grid premium-days"></div>
+          <div class="booking-actions">
+            <button id="nextToTime" class="btn btn-primary btn-disabled" type="button">Siguiente</button>
+          </div>
+        </div>
+
+        <div id="bookingStepTime" class="booking-step-pane">
+          <p class="modal-step-title">Paso 2 de 3 • Elige horario</p>
+          <p id="selectedDayLabel">Primero selecciona un día disponible</p>
+          <div id="timeGrid" class="time-grid premium-time"></div>
+          <p id="nextSuggestion" class="next-suggestion">Sugerencia: selecciona una fecha para ver horarios recomendados.</p>
+          <div class="booking-actions">
+            <button id="backToDate" class="btn btn-ghost" type="button">Atrás</button>
+            <button id="nextToDetails" class="btn btn-primary btn-disabled" type="button">Siguiente</button>
+          </div>
+        </div>
+
+        <div id="bookingStepDetails" class="booking-step-pane">
+          <p class="modal-step-title">Paso 3 de 3 • Completa tus datos</p>
+          <div class="lead-form">
+            <label>
+              Nombre
+              <input id="leadName" type="text" placeholder="Tu nombre" />
+            </label>
+            <label>
+              Email
+              <input id="leadEmail" type="email" placeholder="tu@email.com" />
+            </label>
+            <label>
+              Teléfono
+              <div class="phone-field">
+                <select id="leadPhoneCode">
+                  <option value="+52" data-iso="mx" selected>MX +52 México</option>
+                  <option value="+54" data-iso="ar">AR +54 Argentina</option>
+                  <option value="+591" data-iso="bo">BO +591 Bolivia</option>
+                  <option value="+55" data-iso="br">BR +55 Brasil</option>
+                  <option value="+56" data-iso="cl">CL +56 Chile</option>
+                  <option value="+57" data-iso="co">CO +57 Colombia</option>
+                  <option value="+506" data-iso="cr">CR +506 Costa Rica</option>
+                  <option value="+53" data-iso="cu">CU +53 Cuba</option>
+                  <option value="+593" data-iso="ec">EC +593 Ecuador</option>
+                  <option value="+503" data-iso="sv">SV +503 El Salvador</option>
+                  <option value="+502" data-iso="gt">GT +502 Guatemala</option>
+                  <option value="+509" data-iso="ht">HT +509 Haití</option>
+                  <option value="+504" data-iso="hn">HN +504 Honduras</option>
+                  <option value="+505" data-iso="ni">NI +505 Nicaragua</option>
+                  <option value="+507" data-iso="pa">PA +507 Panamá</option>
+                  <option value="+595" data-iso="py">PY +595 Paraguay</option>
+                  <option value="+51" data-iso="pe">PE +51 Perú</option>
+                  <option value="+1" data-iso="do">DO +1 República Dominicana</option>
+                  <option value="+598" data-iso="uy">UY +598 Uruguay</option>
+                  <option value="+58" data-iso="ve">VE +58 Venezuela</option>
+                </select>
+                <input id="leadPhone" type="tel" placeholder="55 123 456 78" />
+              </div>
+            </label>
+            <label>
+              Servicio
+              <select id="leadService">
+                <option value="Landing Page">Landing Page</option>
+                <option value="Sitio Corporativo">Sitio Corporativo</option>
+                <option value="Desarrollo de software">Desarrollo de software</option>
+                <option value="Apps moviles">Apps moviles</option>
+                <option value="Automatiza tu negocio">Automatiza tu negocio</option>
+                <option value="Marketing digital">Marketing digital</option>
+                <option value="Branding">Branding</option>
+                <option value="SEO + Analytics">SEO + Analytics</option>
+                <option value="Consultoria estrategica">Consultoria estrategica</option>
+                <option value="Paquete completo">Paquete completo</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+            <label>
+              ¿Cómo supiste de nosotros?
+              <select id="leadSource">
+                <option value="Recomendacion">Recomendacion</option>
+                <option value="Tiktok">Tiktok</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Youtube">Youtube</option>
+                <option value="Google">Google</option>
+              </select>
+            </label>
+            <label>
+              ¿Por dónde quieres que te contactemos?
+              <select id="leadContactChannel">
+                <option value="Google Meet">Google Meet</option>
+                <option value="Llamada">Llamada</option>
+                <option value="WhatsApp">WhatsApp</option>
+              </select>
+            </label>
+            <label class="consent-check form-full-span">
+              <input id="leadWhatsappConsent" type="checkbox" required />
+              Acepto recibir confirmación y recordatorios de mi cita por WhatsApp. <span aria-hidden="true">*</span>
+            </label>
+          </div>
+          <div class="booking-actions">
+            <button id="backToTime" class="btn btn-ghost" type="button">Atrás</button>
+            <a id="bookNow" class="btn btn-primary btn-disabled" target="_blank" rel="noopener noreferrer" href="#">
+              Reservar reunión
+            </a>
+          </div>
+          <small class="booking-note">Te llegará correo con lo que reservaste y luego abrimos WhatsApp para seguimiento.</small>
+        </div>
+
+        <div id="bookingStepSuccess" class="booking-step-pane booking-success-pane">
+          <p class="modal-step-title">Reservación completada</p>
+          <h4 id="successTitle">Envío exitoso</h4>
+          <p id="successMessage">Tu reunión quedó apartada correctamente.</p>
+          <div class="booking-actions">
+            <a id="successWhatsappLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer" href="#">
+              Abrir WhatsApp
+            </a>
+            <button id="closeBookingSuccess" class="btn btn-ghost" type="button">Cerrar</button>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Horario reservado correctamente.</div>
+  <div id="whatsappFab" class="whatsapp-fab">
+    <div id="whatsappFabCard" class="whatsapp-chat-card" hidden>
+      <button id="whatsappFabClose" class="whatsapp-chat-close" type="button" aria-label="Cerrar chat de WhatsApp">×</button>
+      <p class="whatsapp-chat-kicker">Mylder Solutions</p>
+      <p class="whatsapp-chat-copy">Hola, te respondemos por WhatsApp. ¿Te cotizamos hoy?</p>
+      <div class="whatsapp-chat-typing" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <a id="whatsappFabLink" class="btn btn-primary whatsapp-chat-cta" target="_blank" rel="noopener noreferrer" href="#">
+        Iniciar chat ahora
+      </a>
+    </div>
+    <button id="whatsappFabBtn" class="whatsapp-fab-btn" type="button" aria-label="Abrir chat de WhatsApp" aria-expanded="false">
+      <span class="whatsapp-fab-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" role="img" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M19.11 17.22c-.27-.13-1.59-.78-1.84-.87-.25-.09-.43-.13-.62.13s-.71.87-.87 1.04c-.16.18-.31.2-.58.07-.27-.13-1.13-.42-2.15-1.35-.8-.71-1.34-1.58-1.49-1.84-.16-.27-.02-.41.11-.54.11-.11.27-.29.4-.44.13-.16.18-.27.27-.45.09-.18.04-.33-.02-.47-.07-.13-.62-1.49-.85-2.04-.22-.53-.45-.45-.62-.46-.16-.01-.33-.01-.51-.01s-.47.07-.71.33c-.25.27-.95.93-.95 2.27 0 1.34.98 2.63 1.11 2.81.13.18 1.92 2.94 4.65 4.12.65.28 1.16.45 1.56.58.66.21 1.26.18 1.73.11.53-.08 1.59-.65 1.82-1.27.22-.62.22-1.16.16-1.27-.07-.11-.25-.18-.51-.31z"></path>
+          <path fill="currentColor" d="M16 3.2c-7.07 0-12.8 5.73-12.8 12.8 0 2.25.59 4.46 1.7 6.4L3.2 28.8l6.57-1.67A12.75 12.75 0 0 0 16 28.8c7.07 0 12.8-5.73 12.8-12.8S23.07 3.2 16 3.2zm0 23.3c-2.01 0-3.98-.53-5.7-1.53l-.41-.24-3.9.99 1.04-3.8-.27-.44A10.24 10.24 0 0 1 5.2 16c0-5.95 4.85-10.8 10.8-10.8S26.8 10.05 26.8 16 21.95 26.5 16 26.5z"></path>
+        </svg>
+      </span>
+      <span class="whatsapp-fab-dot" aria-hidden="true">1</span>
+    </button>
+  </div>
+
+  <script type="module" src="./main.js?v=20260612"></script>
+  <script src="./tab-attention.js?v=20260612" defer></script>
+  <script>
+    document.querySelectorAll(".js-current-year").forEach((node) => {
+      node.textContent = String(new Date().getFullYear());
+    });
+  </script>
+  <script>
+    (() => {
+      const { pathname, search, hash } = window.location;
+      if (pathname.endsWith("/index.html")) {
+        history.replaceState(null, "", pathname.replace(/index\.html$/, "") + search + hash);
+        return;
+      }
+      if (pathname.endsWith(".html")) {
+        history.replaceState(null, "", pathname.slice(0, -5) + search + hash);
+      }
+    })();
+  </script>
+</body>
+</html>

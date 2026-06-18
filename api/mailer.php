@@ -29,7 +29,58 @@ function mailerPlainFromHtml(string $html): string {
   return trim(preg_replace("/\\n{3,}/", "\n\n", $text) ?? $text);
 }
 
+function mailerIsProductionHost(): bool {
+  $host = strtolower((string) ($_SERVER["HTTP_HOST"] ?? ""));
+  return $host !== "" && str_contains($host, "mylder.mx");
+}
+
+function mailerEnsureConfig(): void {
+  static $done = false;
+  if ($done) {
+    return;
+  }
+  if (!defined("MAIL_FROM_EMAIL")) {
+    $settings = __DIR__ . "/settings.php";
+    if (is_file($settings)) {
+      require_once $settings;
+    }
+  }
+  // settings.local.php es solo para XAMPP local — nunca en mylder.mx
+  $local = __DIR__ . "/settings.local.php";
+  if (is_file($local) && !mailerIsProductionHost()) {
+    require_once $local;
+  }
+  $done = true;
+}
+
+function mailerDevCatchEnabled(): bool {
+  if (mailerIsProductionHost()) {
+    return false;
+  }
+  mailerEnsureConfig();
+  return defined("MAIL_DEV_CATCH") && MAIL_DEV_CATCH;
+}
+
+function mailerDevOutboxDir(): string {
+  $dir = dirname(__DIR__) . "/storage/mail-outbox";
+  if (!is_dir($dir)) {
+    mkdir($dir, 0755, true);
+  }
+  return $dir;
+}
+
+function mailerDevCatchSave(string $to, string $subject, string $htmlBody): void {
+  $safe = preg_replace("/[^a-z0-9._-]+/i", "-", $to) ?? "destino";
+  $file = mailerDevOutboxDir() . "/" . date("Ymd-His") . "_" . trim($safe, "-") . ".html";
+  $meta = "<!-- TO: " . $to . " | SUBJECT: " . $subject . " | " . date("c") . " -->\n";
+  $content = $meta . $htmlBody;
+  file_put_contents($file, $content);
+  file_put_contents(mailerDevOutboxDir() . "/latest.html", $content);
+}
+
 function mailerSendHtml(string $to, string $subject, string $htmlBody, string $replyTo = ""): bool {
+  mailerEnsureConfig();
+
   $fromEmail = defined("MAIL_FROM_EMAIL") ? trim((string) MAIL_FROM_EMAIL) : "contacto@mylder.mx";
   $fromName = defined("MAIL_FROM_NAME") ? trim((string) MAIL_FROM_NAME) : "Mylder Solutions";
 
@@ -38,6 +89,12 @@ function mailerSendHtml(string $to, string $subject, string $htmlBody, string $r
   }
 
   $plain = mailerPlainFromHtml($htmlBody);
+
+  if (mailerDevCatchEnabled()) {
+    mailerDevCatchSave($to, $subject, $htmlBody);
+    return true;
+  }
+
   $boundary = "mylder_" . md5((string) microtime(true));
   $headers = [
     "MIME-Version: 1.0",

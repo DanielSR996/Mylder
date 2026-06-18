@@ -1336,6 +1336,8 @@
 
 .features-card__copy {
   margin-top: 0;
+  width: 100%;
+  text-align: center;
 }
 
 .features-card__copy h3 {
@@ -1348,7 +1350,7 @@
 }
 
 .features-card__copy p {
-  margin: 0.65rem 0 0;
+  margin: 0.65rem auto 0;
   font-size: clamp(0.95rem, 1.5vw, 1.05rem);
   line-height: 1.55;
   color: var(--muted);
