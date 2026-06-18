@@ -16,11 +16,44 @@ RewriteRule ^([^/]+)/?$ $1.html [L]
 
 ErrorDocument 404 /404.html
 
-# HTML siempre fresco; CSS/JS con ?v= en la URL pueden cachearse en CDN
+# =============================================================================
+# Cabeceras de seguridad HTTP
+# Requiere mod_headers (habitual en BanaHosting / LiteSpeed / Apache).
+# Si alguna cabecera no aparece tras subir el archivo, contacta soporte para
+# confirmar que mod_headers está activo en tu plan.
+# =============================================================================
 <IfModule mod_headers.c>
+
+  # --- Content-Security-Policy ---
+  # Base solicitada: scripts (GTM/GA), estilos/fuentes Google, imágenes self+data.
+  # Extensiones documentadas para no romper recursos ya usados en el sitio:
+  #   cdn.tailwindcss.com, unpkg.com, cdn.jsdelivr.net (Motion/Lottie/Tailwind)
+  #   fonts.gstatic.com (archivos .woff2 de Google Fonts)
+  #   flagcdn.com, lottiefiles.com (banderas del formulario y animaciones)
+  # 'unsafe-inline' en script/style: GTM bootstrap inline + Tailwind CDN + scripts del CRM
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://googletagmanager.com https://www.google-analytics.com https://google-analytics.com https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://flagcdn.com https://*.lottiefiles.com https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://region1.google-analytics.com; frame-src https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me"
+
+  # --- Evita que el sitio se embeba en iframes de otros dominios ---
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # --- Impide MIME sniffing (ej. tratar un upload como script) ---
+  Header always set X-Content-Type-Options "nosniff"
+
+  # --- Control de Referer en navegación cross-origin ---
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # --- Desactiva APIs del navegador no usadas por el sitio ---
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+  # --- HSTS: forzar HTTPS durante 1 año (solo cuando la petición ya es HTTPS) ---
+  # SetEnvIf es compatible con hosting compartido; no envía HSTS en HTTP plano.
+  SetEnvIf HTTPS on HTTPS_ON
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS_ON
+
+  # --- Caché HTML (contenido estático) ---
   <FilesMatch "\.(html|htm)$">
     Header set Cache-Control "no-cache, must-revalidate"
     Header set Pragma "no-cache"
   </FilesMatch>
-</IfModule>
 
+</IfModule>
